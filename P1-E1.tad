@@ -1,0 +1,34 @@
+TAD secuenciaExtendida
+
+    extiende: secuencia(α)
+
+    otras operaciones:
+        duplicar: secu(α) → secu(α)
+        ∙≤∙: secu(α) × secu(α) → bool
+        reverso: secu(α) → secu(α)
+
+    axiomas: ∀s,t,u:secu(α),∀e,x,y:α
+        duplicar(s)≡ if vacia?(s) then
+          <>
+        else
+          prim(s) ∙ prim(s) ∙ duplicar(fin(s))
+        fi
+
+        s≤t ≡ if vacia?(s) ∨ vacia?(t) then
+          vacia?(s)
+        else
+          if prim(s) ≤ prim(t) then
+            fin(s) ≤ fin(t)
+          else
+            false
+          fi
+        fi
+
+        reverso(s): if vacia?(s) then
+          <>
+        else
+          reverso(s)∘primero(s)
+        fi
+
+        
+Fin TAD
