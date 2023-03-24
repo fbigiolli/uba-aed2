@@ -1,0 +1,27 @@
+TAD ArbolBinarioExtendido(α)
+
+    extiende:ArbolBinario(α)
+
+    otras operaciones:
+        esHoja?: ab(α) → bool
+        #hojas: ab(α) → nat
+        degeneradoAIzquierda: ab(α) → bool
+        zigZag: ab(α) → bool
+        ultimoNivelCompleto: ab(α) → nat
+        espejo: ab(α) → ab(α)
+        esSimetrico?: ab(α) → bool
+
+    axiomas: ∀a:ab(α)
+        esHoja?(α) ≡ ¬nil?(α) ∧ nil?(α) ∧ nil?(α)
+        #hojas(α) ≡ if nil?(α) then 0 else β(esHoja?(α)) + #hojas(izq(α)) + #hojas(der(α)) fi       
+        degeneradoAIzquierda(α) ≡ nil?(α) ∨ esHoja?(α) ∨ (degeneradoAIzquierda(izq(α)) ∧ nil?(der(α)))
+        zigZag(α) ≡ 
+        ultimoNivelCompleto(α) ≡ if nil?(α) then
+          0
+        else
+          1 + min(ultimoNivelCompleto(izq(α)), ultimoNivelCompleto(der(α))) 
+        fi
+        espejo(α) ≡ if nil?(α) then α else bin(espejo(der(α)),raiz(α),espejo(izq(α))) fi
+        esSimetrico?(α) ≡ 
+ 
+Fin TAD

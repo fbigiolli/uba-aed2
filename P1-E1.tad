@@ -6,6 +6,7 @@ TAD secuenciaExtendida
         duplicar: secu(α) → secu(α)
         ∙≤∙: secu(α) × secu(α) → bool
         reverso: secu(α) → secu(α)
+        capicua: secu(α) → bool
 
     axiomas: ∀s,t,u:secu(α),∀e,x,y:α
         duplicar(s)≡ if vacia?(s) then
@@ -17,8 +18,8 @@ TAD secuenciaExtendida
         s≤t ≡ if vacia?(s) ∨ vacia?(t) then
           vacia?(s)
         else
-          if prim(s) ≤ prim(t) then
-            fin(s) ≤ fin(t)
+          if prim(s) ≤ prim(t) then //asumo que cuento con el operador leq para comparar dos caracteres
+            fin(s) ≤ fin(t) //esto seria recursion sobre la funcion de secuencias.
           else
             false
           fi
@@ -30,5 +31,10 @@ TAD secuenciaExtendida
           reverso(s)∘primero(s)
         fi
 
-        
+        capicua(s) ≡ if vacia?(s) then
+          true
+        else
+          prim(s) = ult(s) ∧ capicua(com(fin(s)))
+        fi
+
 Fin TAD
