@@ -4,6 +4,8 @@ TAD diccionarioExtendido
 
     otras operaciones:
         tieneValor: dicc(α,nat) × nat → bool
+        clavesMayoresA: dicc(α × nat) × nat → conj(α)
+
 
     axiomas: ∀dic:dicc(α,nat) , ∀val:nat
         tieneValor(dic,val) ≡ if ¬(def?(c,dic)) then //la idea es que esto evalua false cuando el diccionario esta vacio (llegaria a esta situacion porque me quedo sin claves en la lista, entonces lo niego para entrar por la rama positiva del if y devolver false.)
@@ -16,4 +18,13 @@ TAD diccionarioExtendido
           fi
         fi
 
+        clavesMayoresA(dic,val) ≡ if ¬(def?(c,dic)) then //misma idea que antes
+          ∅
+        else
+          if obtener(dameUno(claves(dic)),dic) > val then
+            Ag(obtener(dameUno(claves(dic)),dic),clavesMayoresA(borrar(dameUno(claves(dic))),val)) //recursion 
+          else
+            clavesMayoresA(borrar(dameUno(claves(dic))),val)
+          fi
+        fi
 Fin TAD
