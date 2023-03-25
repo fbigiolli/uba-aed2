@@ -1,0 +1,26 @@
+TAD conjuntoExtendido
+
+    extiende: conjunto(α)
+
+    otras operaciones:
+    partesDe(α): conj(α) → conj(conj(α))
+    combinacionesDeK: conj(α) × nat → conj(α)
+
+    axiomas:∀c:conj(α) , ∀k:nat
+    partesDe(c) ≡ if ∅?(c)  then
+              {∅}
+            else
+              {c} ∪ {partesDe(sinUno(c))} ∪ ag(dameUno(c),partesDe(sinUno(c))) 
+            fi
+
+    combinacionesDeK(c,k) ≡ if k=0 then //si k es 0 solo corresponde el vacio
+      Ag(∅,∅)
+    else
+      if #c<k then // necesito chequear que todos los subconjuntos de adentro tengan < num de elementos que k
+        
+      else
+        valor2
+      fi
+    fi
+
+Fin TAD

@@ -1,0 +1,19 @@
+TAD diccionarioExtendido
+
+    extiende: diccionario
+
+    otras operaciones:
+        tieneValor: dicc(α,nat) × nat → bool
+
+    axiomas: ∀dic:dicc(α,nat) , ∀val:nat
+        tieneValor(dic,val) ≡ if ¬(def?(c,dic)) then //la idea es que esto evalua false cuando el diccionario esta vacio (llegaria a esta situacion porque me quedo sin claves en la lista, entonces lo niego para entrar por la rama positiva del if y devolver false.)
+          false
+        else
+          if obtener(dameUno(claves(dic)),dic) = val then //encuentro el valor que buscaba
+            true
+          else
+            tieneValor(borrar(dameUno(claves(dic))),val) //sigo buscando recursivamente en el diccionario borrando un par clave-significado
+          fi
+        fi
+
+Fin TAD
