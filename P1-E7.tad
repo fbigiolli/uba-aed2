@@ -1,0 +1,41 @@
+TAD roseTreeExtendido
+
+    extiende: roseTree
+
+    otras operaciones:
+        hoja?: roseTree(α) → bool 
+        altura: roseTree(α) → nat
+        maxAlturaHijos: secu(roseTree(α)) → nat //esta funcion es necesario definirla porque no podemos hacer recursion con la funcion altura ya que como parametro de entrada tiene un rosetree,e hijos devuelve sec de rosetrees.
+        cantidadHojas: roseTree(α) → nat
+        cantidadHojasHijos: secu(roseTree(α)) → nat
+        podar: roseTree(α) → roseTree(α)
+
+
+    axiomas: ∀ r:roseTree(α), ∀ sr:secu(roseTree(α))
+        hoja?(r) ≡ vacia?(hijos(r))
+        altura(r) ≡ 1 + maxAlturaHijos(hijos(r))
+        maxAlturaHijos(sr) ≡ if vacia?(s) then
+                               0
+                             else
+                              max(altura(prim(s)),maxAlturaHijos(fin(s)))
+                             fi
+        cantidadHojas(r) ≡ if hoja?(r) then
+                              1
+                            else
+                              cantidadHojasHijos(hijos(r))
+                            fi
+
+        cantidadHojasHijos(sr) ≡ if vacia?(sr) then
+                                    0
+                                  else
+                                    cantidadHojas(prim(sr)) + cantidadHojasHijos(fin(sr))  
+                                  fi
+
+        podar(r) ≡ rose(raiz(r), podarHijos(hijos(r)))
+
+        podarHijos(sr) ≡ if hoja?(prim(sr)) then
+          podarHijos(fin(sr))
+        else
+          podar(prim(sr)) ∙ podarHijos(fin(sr))
+        fi
+  Fin TAD

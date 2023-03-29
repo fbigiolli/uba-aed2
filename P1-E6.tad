@@ -1,0 +1,20 @@
+TAD arbolTernarioExtendido
+
+    extiende: arbolTernario
+
+    otras operaciones:
+        nivelNormal?: at(α) × nat → bool
+        acotado?: at(α) × nat → bool
+
+    axiomas: ∀arbol:at(α), ∀nivel:nat
+        nivelNormal?(arbol,nivel) ≡ if nivel=0 then //cuando llego al primer nivel (o si arranco por el) me fijo que no sea nil
+          ¬nil?(arbol) ∧ ¬nil?(izq(arbol)) ∧ ¬nil?(med(arbol)) ∧ ¬nil?(der(arbol))
+        else
+          (nil?(izq(arbol))) ∨ (nivelNormal(izq(arbol),k-1)) //voy bajando hasta llegar al nivel, el contador de k funciona "al reves", vamos aumentando el nivel y k disminuye
+          ∧ (nil?(med(arbol)) ∨ nivelNormal(med(arbol),k-1)) 
+          ∧ (nil?(med(arbol)) ∨ nivelNormal(der(arbol),k-1))           
+        fi
+
+        
+
+Fin TAD
