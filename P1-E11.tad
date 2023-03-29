@@ -1,0 +1,84 @@
+TAD electroiman
+
+    géneros: iman
+
+    igualdad observacional:
+      (∀e₁, e₂ : electroiman)(e₁ =obs e₂ ⇔ cinta(e₁) =obs cinta(e₂)
+                              ∧ imanPrendido?(e1) =obs imanPrendido?(e2)
+                              ∧ imanCargado?(e1) =obs imanCargado?(e2))
+
+    axiomas: ∀e:electroiman, ∀ c:cinta
+      cinta(arrancar(c)) ≡ c 
+      cinta(prender(e)) ≡ if celdaActualOcupada?(e) then sacarElem(cinta(e)) else cinta(e) fi
+      cinta(apagar(e)) ≡ if imanCargado?(e) then ponerElem(cinta(e)) else cinta(e) fi   
+      cinta(←(e)) ≡ ←(cinta(e))
+      cinta(→(e)) ≡ →(cinta(e))
+
+      imanPrendido?(arrancar(c)) ≡ false
+      imanPrendido?(prender(e)) ≡ true
+      imanPrendido?(apagar(e)) ≡ false
+      imanPrendido?(←(e)) ≡ imanPrendido?(e)
+      imanPrendido?(→(e)) ≡ imanPrendido?(e)
+
+      imanCargado?(arrancar(c)) ≡ false
+      imanCargado?(prender(e)) ≡ celdaActualOcupada?(e)
+      imanCargado?(apagar(e)) ≡ false //lo puedo afirmar por las restricciones 
+      imanCargado?(←(e)) ≡ imanCargado?(e)
+      imanCargado?(→(e)) ≡ imanCargado?(e)
+
+      celdaActualOcupada?(e) ≡ celdaActualOcupada?(cinta(e))
+      #giros←(e) ≡ #giros←(cinta(e))
+      #giros→(e) ≡ #giros→(cinta(e))     
+
+Fin TAD
+
+TAD CINTA
+
+    géneros: cinta
+
+    igualdad observacional:
+      (∀c₁, c₂ : algo)(c₁ =obs c₂ ⇔ #celdas(c₁) =obs #celdas(c₂)
+                        ∧L celdaActual(c1) =obs celdaActual(c2)
+                        ∧ #giros←(c1) =obs #giros←(c2)
+                        ∧ #giros→(c2) =obs #giros→(c2)
+                        ∧ (∀n:nat)(n ≤ #celdas(c1) ⟹L celdaOcupada?(n,c1) =obs celdaOcupada?(n,c2))
+
+    axiomas: ∀c:cinta, ∀n:nat
+        #celdas(Arrancar(n)) ≡ n
+        #celdas(ponerElem(c)) ≡ #celdas(c)
+        #celdas(sacarElem(c)) ≡ #celdas(c)
+        #celdas(←(c)) ≡ #celdas(c)
+        #celdas(→(c)) ≡ #celdas(c)
+
+        celdaOcupada?(n,arrancar(c)) ≡ false
+        celdaOcupada?(n,ponerElem(c)) ≡ m = celdaActual(c) ∨ celdaOcupada?(m,c)
+        celdaOcupada?(n,sacarElem(c)) ≡ if n = celdaActual(c) then false else celdaOcupada?(n,c) fi
+        celdaOcupada?(n,←(c)) ≡ celdaOcupada?(n,c)
+        celdaOcupada?(n,→(c)) ≡ celdaOcupada?(n,c)
+
+        celdaActual(arrancar(n)) ≡ 0
+        celdaActual(ponerElem(c)) ≡ celdaActual(c)
+        celdaActual(sacarElem(c)) ≡ celdaActual(c)
+        celdaActual(←(c)) ≡ if celdaActual(c) = 0 then #celdas(c)-1 else celdaActual(c) - 1 fi
+        celdaActual(→(c)) ≡ if celdaActual(c) = #celdas(c) - 1 then 0 else celdaActual(c) + 1 fi
+
+        #giros←(arrancar(n)) ≡ 0
+        #giros←(ponerElem(c)) ≡ #giros←(c)
+        #giros←(sacarElem(c)) ≡ #giros←(c)
+        #giros←(←(c)) ≡ #giros(c) + 1
+        #giros←(→(c)) ≡ #giros(c)
+
+        #giros→(arrancar(n)) ≡ 0
+        #giros→(ponerElem(c)) ≡ #giros→(c)
+        #giros→(sacarElem(c)) ≡ #giros→(c)
+        #giros→(←(c)) ≡ #giros→(c)
+        #giros→(→(c)) ≡ #giros→(c) + 1
+
+        celdaActualOcupada?(c) ≡ celdaOcupada?(celdaActual(c),c)
+
+        #elem(c) ≡ #elemDesdeCelda(#celdas,c)
+        #elemDesdeCelda(n,c) ≡ if n<0 then 0 else β(celdaOcupada?(n,c)) + #elemDesdeCelda(n-1,c) fi
+
+
+
+Fin TAD

@@ -9,9 +9,12 @@ TAD roseTreeExtendido
         cantidadHojas: roseTree(α) → nat
         cantidadHojasHijos: secu(roseTree(α)) → nat
         podar: roseTree(α) → roseTree(α)
+        podarHijos: secu(roseTree(α)) → secu(roseTree(α))
+        ramas: roseTree(α) → secu(secu(α))
+        ramasHijos: secu(rosetree(α)) → secu(secu(α))
+        prefijarEnTodos: α × secu(secu(α)) → secu(secu(α))
 
-
-    axiomas: ∀ r:roseTree(α), ∀ sr:secu(roseTree(α))
+    axiomas: ∀ r:roseTree(α), ∀ sr:secu(roseTree(α)), ∀as: secu(secu(α))
         hoja?(r) ≡ vacia?(hijos(r))
         altura(r) ≡ 1 + maxAlturaHijos(hijos(r))
         maxAlturaHijos(sr) ≡ if vacia?(s) then
@@ -34,8 +37,30 @@ TAD roseTreeExtendido
         podar(r) ≡ rose(raiz(r), podarHijos(hijos(r)))
 
         podarHijos(sr) ≡ if hoja?(prim(sr)) then
-          podarHijos(fin(sr))
-        else
-          podar(prim(sr)) ∙ podarHijos(fin(sr))
-        fi
+                          podarHijos(fin(sr))
+                        else
+                          podar(prim(sr)) ∙ podarHijos(fin(sr))
+                        fi
+
+        ramas(r) ≡ if hoja?(r) then
+                    (raiz(r) ∙ <>) ∙ <>
+                  else
+                    prefijarEnTodos(raiz(r), ramasHijos(hijos(r)))
+                  fi //idea: voy viendo los primeros de cada secuencia hasta q llego a una hoja, y llamo recursivamente a la funcion con el fin de la secu de modo que en algun momento me quede sin nodos posibles
+
+        ramasHijos(sr) ≡ if vacia?(s) then
+                          <>
+                        else
+                          ramas(prim(s)) & ramasHijos(fin(s))
+                        fi
+
+        prefijarEnTodos(a,as) ≡ if vacia?(as) then
+                                <>
+                              else
+                                (a ∙ prim(as)) ∙ prefijarEnTodos(a,fin(as))
+                              fi
+
+
+        
+
   Fin TAD
