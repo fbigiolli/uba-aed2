@@ -24,6 +24,8 @@ TAD FILA
       posicion(p,atender(f) ≡ posicion(p,f) - 1
       posicion(q,(llegar(p,f))) ≡ if q =obs p then longitud(f) + 1 else posicion(q,f) fi // en lenguaje informal, lo que estoy diciendo aca es que si justo estoy consultando la posicion del que acaba de llegar entonces es el ultimo de la fila (longitud + 1), caso contrario es como chequear la posicion de cualquier otro.
       
-        
+      esperando(p,abrirVentanilla) ≡ false
+      esperando(p,llegar(q,f)) ≡ q =obs p ∨ esperando(q,f)
+      esperando(p,atender(f) ≡ esperando(p,f) ∧L posicion(p,f) > 1             
 
 Fin TAD
