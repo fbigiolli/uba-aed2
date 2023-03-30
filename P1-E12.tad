@@ -1,0 +1,29 @@
+TAD FILA
+
+    géneros: fila
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    generadores:
+        abrirVentanilla: → fila
+        llegar: persona p × fila f → fila {¬esperando(p,f)}
+        atender: fila f → fila {¬vacia(f)}
+        
+    observadores básicos:
+        posicion: persona p × fila f → nat {esperando(p,f)}
+        esperando: persona × fila → bool 
+
+    otras operaciones:
+        vacia: fila  → bool
+        longitud: fila → nat
+
+    axiomas: ∀p,q,r: persona, ∀f: fila
+      posicion(p,abrirVentanilla) ≡ //no tiene sentido axiomatizarlo porque acabamos de abrir la ventanilla, por lo que no puede haber una fila
+      posicion(p,atender(f) ≡ posicion(p,f) - 1
+      posicion(q,(llegar(p,f))) ≡ if q =obs p then longitud(f) + 1 else posicion(q,f) fi // en lenguaje informal, lo que estoy diciendo aca es que si justo estoy consultando la posicion del que acaba de llegar entonces es el ultimo de la fila (longitud + 1), caso contrario es como chequear la posicion de cualquier otro.
+      
+        
+
+Fin TAD
