@@ -2,6 +2,11 @@ TAD FILA
 
     géneros: fila
 
+    igualdad observacional:
+        (∀f₁, f₂ : fila)(f₁ =obs f₂ ⇔ 
+            (∀p:persona)(esperando(p,f₁) =obs esperando(p,f₂)
+                         ∧L (esperando(p,f1)) ⟹L posicion(p,f1) =obs posicion(p,f2)))
+
     exporta: algo, observadores básicos, generadores
 
     usa: bool, nat
@@ -28,4 +33,16 @@ TAD FILA
       esperando(p,llegar(q,f)) ≡ q =obs p ∨ esperando(q,f)
       esperando(p,atender(f) ≡ esperando(p,f) ∧L posicion(p,f) > 1             
 
+      longitud(abrirVentanilla()) ≡ 0
+      longitud(llegar(p,f)) ≡ longitud(f) + 1
+      longitud(atender(f)) ≡ longitud(f) - 1
+      
+      vacia(abrirVentanilla()) ≡ true
+      vacia(llegar(p,f)) ≡ false
+      vacia(atender(f)) ≡ longitud(f) =obs 1        
+
 Fin TAD
+
+////////////////////////////// PARTE B //////////////////////////////
+
+
