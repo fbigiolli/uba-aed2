@@ -45,4 +45,63 @@ Fin TAD
 
 ////////////////////////////// PARTE B //////////////////////////////
 
+TAD FILA
 
+    géneros: fila
+
+    igualdad observacional:
+        (∀f₁, f₂ : fila)(f₁ =obs f₂ ⇔ 
+            (∀p:persona)(esperando(p,f₁) =obs esperando(p,f₂)
+                         ∧L (esperando(p,f1)) ⟹L posicion(p,f1) =obs posicion(p,f2)))
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    generadores:
+        abrirVentanilla: → fila
+        llegar: persona p × fila f → fila {¬esperando(p,f)}
+        atender: fila f → fila {¬vacia(f)}
+        colarseAdelanteDe: persona p × persona q × fila f → fila {¬esperando(p,f) ∧ esperando(q,f)}
+        retirarse: persona p × fila f → fila {esperando(p,f)}
+
+    observadores básicos:
+        posicion: persona p × fila f → nat {esperando(p,f)}
+        esperando: persona × fila → bool 
+        seColo?: persona p × fila f → bool {esperando(p,f)}
+
+    otras operaciones:
+        vacia: fila  → bool
+        longitud: fila → nat
+
+    axiomas: ∀p,q,r: persona, ∀f: fila
+      posicion(p,abrirVentanilla) ≡ //no tiene sentido axiomatizarlo porque acabamos de abrir la ventanilla, por lo que no puede haber una fila
+      posicion(p,atender(f) ≡ posicion(p,f) - 1
+      posicion(q,(llegar(p,f))) ≡ if q =obs p then longitud(f) + 1 else posicion(q,f) fi // en lenguaje informal, lo que estoy diciendo aca es que si justo estoy consultando la posicion del que acaba de llegar entonces es el ultimo de la fila (longitud + 1), caso contrario es como chequear la posicion de cualquier otro.
+      posicion(r,colarseAdelanteDe(p,q,f)) ≡ if r =obs q then
+          posicion(q,f) //r se cuela adelante de q, entonces su posicion va a ser la que tenia q en la fila antes de que se le cuelen.
+      else
+        posicion(r,f) + β(posicion(q,f)≤posicion(r,f)) //si no se cuela r, devuelvo su posicion y le sumo 1 dependiendo de si el que se colo esta adelante suyo (lo cual afecta) o detras(lo cual no afecta)    
+      fi
+      posicion(q,retirarse(p,f)) ≡ posicion(q,f) - β(posicion(q,f)≤posicion(r,f)) //mismo razonamiento, el resultado depende de si el que se va esta adelante o atras
+
+      esperando(p,abrirVentanilla) ≡ false
+      esperando(p,llegar(q,f)) ≡ q =obs p ∨ esperando(q,f)
+      esperando(p,atender(f) ≡ esperando(p,f) ∧L posicion(p,f) > 1             
+      esperando(r,colarseAdelanteDe(p,q,f)) ≡ r =obs p ∨ esperando(q,f) //por restricciones no seria siempre true?
+      esperando(q,retirarse(p,f)) ≡ q ≠ p ∧ esperando(q,f)
+
+      seColo?(p,abrirVentanilla()) ≡ false
+      seColo?(p,atender(f)) ≡ seColo?(p,f)
+      seColo?(r,colarseAdelanteDe(p,q,f)) ≡ r =obs p ∨ seColo?(r,f)
+      seColo?(q,retirarse(p,f)) ≡ seColo?(q,f)
+
+      longitud(abrirVentanilla()) ≡ 0
+      longitud(llegar(p,f)) ≡ longitud(f) + 1
+      longitud(atender(f)) ≡ longitud(f) - 1
+      longitud(colarseAdelanteDe(p,q,f)) ≡ longitud(f) + 1
+      longitud(retirarse(p,f)) ≡ longitud(f) - 1
+
+      vacia(f) ≡ longitud(f) =obs 0
+
+Fin TAD
