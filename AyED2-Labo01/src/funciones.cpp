@@ -102,10 +102,25 @@ vector<char> traducir(vector<pair<char, char>> tr, vector<char> str) {
 
 // Ejercicio 10
 bool integrantes_repetidos(vector<Mail> s) {
-    return true;
+    for(Mail m1:s){
+        for(Mail m2:s){
+            if(m1.libretas()!=m2.libretas()){
+                for(LU libreta: m1.libretas()){
+                    if(m2.libretas().count(libreta)>0) return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 // Ejercicio 11
 map<set<LU>, Mail> entregas_finales(vector<Mail> s) {
-  return map<set<LU>, Mail>();
+  map<set<LU>, Mail> entregasFinales;
+  for(Mail m:s){
+    if(m.adjunto() && m.fecha() > entregasFinales[m.libretas()].fecha()){
+        entregasFinales[m.libretas()] = m;
+    }
+  }
+  return entregasFinales;
 }
