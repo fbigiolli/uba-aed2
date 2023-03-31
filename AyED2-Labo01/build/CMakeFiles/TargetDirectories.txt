@@ -1,0 +1,6 @@
+/home/felipe/Documentos/uba-aed2/AyED2-Labo01/build/CMakeFiles/tests_algobot.dir
+/home/felipe/Documentos/uba-aed2/AyED2-Labo01/build/CMakeFiles/tests_ejercitacion.dir
+/home/felipe/Documentos/uba-aed2/AyED2-Labo01/build/CMakeFiles/gtest.dir
+/home/felipe/Documentos/uba-aed2/AyED2-Labo01/build/CMakeFiles/gtest_main.dir
+/home/felipe/Documentos/uba-aed2/AyED2-Labo01/build/CMakeFiles/edit_cache.dir
+/home/felipe/Documentos/uba-aed2/AyED2-Labo01/build/CMakeFiles/rebuild_cache.dir

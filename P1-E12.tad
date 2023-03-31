@@ -183,4 +183,3 @@ TAD FILA
       vacia(f) ≡ longitud(f) =obs 0
 
 Fin TAD
-
