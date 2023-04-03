@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -std=gnu++11 -ggdb3 -g CMakeFiles/ej12.dir/tests/test_recordatorios.cpp.o -o ej12  libgtest.a libgtest_main.a 

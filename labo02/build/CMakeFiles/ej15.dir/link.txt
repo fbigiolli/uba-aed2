@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -std=gnu++11 -ggdb3 -g CMakeFiles/ej15.dir/tests/test_juego.cpp.o -o ej15  libgtest.a libgtest_main.a 

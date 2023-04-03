@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -std=gnu++11 -ggdb3 -g CMakeFiles/truco.dir/tests/test_truco.cpp.o -o truco  libgtest.a libgtest_main.a 
