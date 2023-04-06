@@ -1,0 +1,53 @@
+TAD Tablero
+
+
+
+    géneros: tablero
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat, baldosa
+
+    observadores básicos:
+        #baldosas: tablero t → nat
+        efectoBaldosa: nat b × tablero t → nat
+
+    generadores:
+        nuevoTablero: secu[baldosa] bs → tablero  
+
+    otras operaciones:
+        otraCosa: algo × nat → nat
+
+    axiomas:
+        #baldosas(nuevoTablero(bs)) ≡ long(bs)
+        efectoBaldosa(nuevoTablero(bs)) ≡ 
+
+Fin TAD
+
+
+TAD Baldosa
+
+    igualdad observacional:
+      (∀b₁, b₂ : algo)(b₁ =obs b₂ ⇔ #casilleros(b₁) =obs #casilleros(b₂) ∧ avanza?(b1) =obs avanza?(b2))
+
+    géneros: baldosa
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    observadores básicos:
+      avanza?: baldosa b → bool
+      #casilleros: baldosa b → nat
+
+    generadores:
+        baldosa: nat casilleros × bool avanza → baldosa
+
+    otras operaciones:
+        otraCosa: algo × nat → nat
+
+    axiomas:
+        avanza?(baldosa(c,a)) ≡ a
+        #casilleros(baldosa(c,a)) ≡ c 
+
+Fin TAD
