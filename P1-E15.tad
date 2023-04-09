@@ -1,0 +1,87 @@
+TAD parada es nat
+
+
+TAD Colectivo
+
+    géneros: colectivo
+
+    exporta: colectivo
+
+    usa: nat, parada, conj, secu 
+
+    igualdad observacional:
+      (∀c₁, c₂ : colectivo)(c₁ =obs c₂ ⇔ recorrido(c₁) =obs recorrido(c₂) ∧
+                             cantidadAsientos(c1) =obs cantidadAsientos(c2) ∧ 
+                             paradaActual(c1) =obs paradaActual(c2) ∧
+                             pasajeros(c1) =obs pasajeros(c2) ∧
+                             (∀p:pasajero)(p∈pasajeros(c1)) ⟹L dondeBaja?(c1,p) =obs dondeBaja?(c2,p))
+
+    observadores básicos:
+        recorrido: colectivo → secu(parada)
+        cantidadAsientos: colectivo → nat
+        pasajeros: colectivo → conj(pasajero)
+        dondeBaja?: colectivo c × pasajero p → parada {p ∈ pasajeros(c)}
+        paradaActual: colectivo → parada
+
+    generadores:
+        nuevoColectivo: secu(parada) paradas × nat asientos → colectivo {¬vacia?(paradas)}
+        subePasajero: colectivo c × pasajero p × parada d→ colectivo {p ∉ pasajeros(c) ∧ esta?(d, recorrido(c))}
+        siguienteParada: colectivo c → colectivo {paradaActual(c) < tam(recorrido(c)) - 1}
+
+
+    otras operaciones:
+        quienBaja: colectivo c → conj(pasajero) //no axiomatizo porque el enunciado solo me pide que diga lo que requiero de ella. La informacion de la parada actual la puedo obtener del colectivo
+
+    axiomas:
+        recorrido(nuevoColectivo(pdas,a)) ≡ pdas
+        recorrido(subePasajero(c,p,d)) ≡ recorrido(c)
+        recorrido(siguienteParada(c)) ≡ recorrido(c)
+
+        cantidadAsientos(nuevoColectivo(pdas,a)) ≡ a
+        cantidadAsientos(subePasajero(c,p,d)) ≡ cantidadAsientos(c)
+        cantidadAsientos(siguienteParada(c) ≡ cantidadAsientos(c)
+
+        pasajeros(nuevoColectivo(pdas,a)) ≡ ∅
+        pasajeros(subePasajero(c,p,d)) ≡ Ag(p,pasajeros(c))
+        pasajeros(siguienteParada(c)) ≡ pasajeros(c) - quienBaja(c)
+
+        dondeBaja?(nuevoColectivo) \\ no tiene sentido axiomatizar porque no hay pasajeros todavia
+        dondeBaja?(subePasajero(c,p1,d),p2) ≡ if p1 = p2 then d else dondeBaja?(c,p2) fi
+        dondeBaja(siguienteParada(c),p) ≡ dondeBaja(c,p)
+
+        paradaActual(nuevoColectivo(pdas,a)) ≡ 0
+        paradaActual(subePasajero(c,p,d)) ≡ paradaActual(c)
+        paradaActual(siguienteParada(c)) ≡ paradaActual(c) + 1
+
+Fin TAD
+
+// pto B
+//  deberia poder minimamente distinguir entre los asientos delanteros y el resto.
+// ademas, tambien necesito poder ver si los pasajeros tienen discapacidad o no. para ello podria hacer que los pasajeros pasen a ser una tupla con nombre y discapacidad s/n, o armar un tad especifico para pasajeros.
+// no esta modelado el comp automatico de sentarse. probablemente sea buena idea armar un tad pasajero en el que pueda consultar si esta sentado, y para modelar el comp automatico
+// en el generador subePasajero con un if usar una funcion que "lo siente" si hay asientos disp, y si no que viaje parado. el tad pasajero seria algo como:
+
+TAD Pasajero
+
+    géneros: pasajero
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    generadores:
+        subePasajero: parada p → pasajero
+        sentar: ...
+
+    observadores básicos:
+        discapacitado?: pasajero → bool
+        sentado?: pasajero → bool
+        vaHasta: pasajero → parada
+
+    otras operaciones:
+        otraCosa: algo × nat → nat
+
+    axiomas:
+        ...
+
+Fin TAD
