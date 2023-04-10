@@ -1,0 +1,117 @@
+TAD cp es Nat // codigo postal
+TAD peso es Nat
+
+TAD Paquete
+
+    géneros: paquete
+
+    exporta: pesoPaq, cpDestino, llegaPaquete
+
+    usa: peso, cp
+
+    igualdad observacional:
+      (∀p₁, p₂ : paquete)(p₁ =obs p₂ ⇔ peso(p₁) =obs peso(p₂) ∧
+                          cpDestino(p1) =obs cpDestino(p2))
+
+    observadores básicos:
+        pesoPaq: paquete → peso
+        cpDestino: paquete → cp
+
+    generadores:
+        llegaPaquete: peso × cpDestino → paquete
+
+    otras operaciones:
+
+    axiomas:
+        
+        peso(llegaPaquete(p,cp)) ≡ p / 1000 // lo paso a kilos para que sea mas simple el tema de la bolsa
+        cpDestino(llegaPaquete(p,cp)) ≡ cpDestino
+
+Fin TAD
+
+TAD cartero es String
+
+TAD Oficina postal
+
+    géneros: op
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat, paquete, cartero
+
+    igualdad observacional:
+      (∀op₁, op₂ : op)(op₁ =obs op₂ ⇔ carteros(op₁) =obs carteros(op₂) ∧
+                          deposito(op1) =obs deposito(op2) ∧
+                          #rebotados(op1) =obs #rebotados(op2) ∧
+                          (∀c: cartero)(c ∈ claves(carteros)) ⟹ paquetesAsignados(c,op1) =obs paquetesAsignados(c,op2))
+
+    observadores básicos:
+        carteros: op → dicc(cartero,cp) // a cada cartero se le asocia un unico CP correspondiente a su zona.
+        deposito: op → conj(paquete) //acceso al deposito
+        paquetesAsignados: cartero c × op o → conj(paquete)                 {c ∈ claves(carteros(o))}
+        #rebotados: op → nat
+
+    generadores:
+        abrirOP: dicc(cartero,cp) → op // asumo que arranco con el deposito vacio, y que no se sumaran nuevos carteros.
+        recibirCargamento: conj(paquete) × op → op
+        iniciarRecorrido: cartero c × op o → op                             {c ∈ claves(carteros(o)) ∧ ¬∅?(paquetesAsignados(c))}
+        finalizarRecorrido: cartero c × op o × conj(paquete) ps → op        {c ∈ claves(carteros(o)) ∧ ps ⊂ paquetesAsignados(c,op)} // aca joni pide tambien que paquetes asignados de c no sea vacio pero no le encuentro el sentido, ya que no podria haber iniciado el recorrido sin paquetes iniciales (y como va a terminar un recorrido que nunca inicio?)
+
+    otras operaciones:
+        paquetesAsociadosACP: cartero c × conj(paquete) → conj(paquete) // la idea de esta funcion es que dado un cartero busco su cp y devuelvo el conj de paquetes que unicamente tienen el cp asociado a tal cartero para despues poder asignarle paquetes
+        //nota2 de paqasoc: creo que no hace falta restringirla ya que va a estar llamada siempre desde una funcion que se asegura que el cartero pertenece a la op, y con un conj de paquetes sacadas de esa misma OP, ademas no es una funcion que se exporte, seria "privada" pero no estoy seguro al 100%.
+        agregarPaquetes: cartero c × conj(paquete) × op o → conj(paquete) // el nombre no es muy declarativo, pero lo que hace es fijarse si la lista de los paquetes correspondientes a su CP se pasa del peso maximo, y en base a eso va sacando hasta que el peso sea el maximo posible
+        pesoBolsa: conj(paquete) → nat
+
+    axiomas:
+        carteros(abrirOP(cs)) ≡ cs
+        carteros(recibirCargamento(paqs,op)) ≡ carteros(op)
+        carteros(iniciarRecorrido(c,op)) ≡ carteros(op)
+        carteros(finalizarRecorrido(c,op,paqs)) ≡ if paqs =obs paquetesIniciales(c,op) then
+          borrar(c,carteros(op))
+        else
+          carteros(op)
+        fi
+
+        deposito(abrirOP(cs)) ≡ ∅
+        deposito(recibirCargamento(paqs,op)) ≡ paqs ∪  deposito(op)
+        deposito(iniciarRecorrido(c,op)) ≡ deposito(op) - paquetesAsignados(c,iniciarRecorrido(c,op)) // tengo que poner iniciar recorrido adentro ya que la asignacion de paquetes se da justamente en el momento que se inicia el recorrido, si pusiera op simplemente no habria ningun paquete por como axiomatice
+        deposito(finalizarRecorrido(c,op,paqs)) ≡ deposito(op) ∪ paqs
+
+        paquetesAsignados(c,abrirOP(cs)) ≡ ∅
+        paquetesAsignados(c,recibirCargamento(paqs,op)) ≡ paquetesAsignados(c,op)
+        paquetesAsignados(c1,iniciarRecorrido(c2,op)) ≡ if c1 =obs c2 then
+                                                        agregarPaquetes(c,paquetesAsociadosACP(obtener(c,carteros(op))),deposito(op),op)
+                                                      else
+                                                        paquetesAsignados(c1,op)
+                                                      fi
+        paquetesAsignados(c1,finalizarRecorrido(c2,op,paqs)) ≡ if c1 =obs c2 then
+                                                                ∅ // si finaliza su recorrido se queda sin paquetes asignados ya que se devuelven al deposito
+                                                              else
+                                                                paquetesAsignados(c1)
+                                                              fi
+
+        #rebotados(abrirOP(cs)) ≡ 0 
+        #rebotados(recibirCargamento(paqs,op)) ≡ #rebotados(op)
+        #rebotados(iniciarRecorrido(c,op)) ≡ #rebotados(op)
+        #rebotados(finalizarRecorrido(c,op,paqs)) ≡ #rebotados(op) + #(paqs) // los que habian + los que rebotaron ahora (que son los que le quedaron al finalizar reco)
+
+        agregarPaquetes(c,paqs,op) ≡ if pesoBolsa(paqs) < 25 then
+                                        paqs
+                                      else
+                                        agregarPaquetes(c,sinUno(paqs),op)
+                                      fi// ya se que mi lista de paquetes esta asociada al cp correcto, solo me resta ver que no me haya pasado del peso
+
+        pesoBolsa(paqs) ≡ if ∅?(paqs) then 0 else pesoPaq(dameUno(paqs)) + pesoBolsa(sinUno(paqs)) fi
+
+        paquetesAsociadosACP(cp,paqs) ≡ if ∅?(paqs) then
+                                          ∅
+                                        else
+                                          if cpDestino(dameUno(paqs)) =obs cp then
+                                            Ag(dameUno(paqs),sinUno(paquetesAsociadosACP)
+                                          else
+                                            sinUno(paquetesAsociadosACP)
+                                          fi
+                                        fi
+
+Fin TAD
