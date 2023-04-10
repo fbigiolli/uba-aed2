@@ -1,0 +1,80 @@
+// me interesa: saber por cual cabina paso mas vehiculos de cierto tipo
+// cuanto facturo cada cabina (separo x cabina entonces)
+// 
+
+TAD vehiculo es String
+TAD cabina es Nat
+TAD limite es Nat
+TAD Precio es Nat
+
+TAD PDZ
+
+    géneros: pdz
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    observadores básicos:
+      #cabinas: pdz → nat // numero total de cabinas
+      limite: pdz → nat
+      precios: pdz → dicc(vehiculo,precio)
+      colaDeCabina: pdz p × cabina c → cola() {c≤#cabinas(p)}
+      facturacion: pdz p × cabina c → nat     {c≤#cabinas(p)}
+
+    generadores:
+        nuevoPDZ: cabina × limite × dicc(vehiculo,precio) → pdz
+        llegaAuto: vehiculo  v × cabina c × pdz p → pdz {c ≤ #cabinas(p) ∧ v ∈ claves(precios(p))}
+        cobrar: pdz p × cabina c → pdz {c ≤ #cabinas(p)}
+
+    otras operaciones:
+        cuantosPasaron?: pdz p × cabina c × vehiculo v → nat
+
+    axiomas:
+        #cabinas(nuevoPDZ(c,l,p)) ≡ c
+        #cabinas(llegaAuto(v,c,p)) ≡ #cabinas(p)
+        #cabinas(cobrar(p,c)) ≡ #cabinas(p)
+
+        limite(nuevoPDZ(c,l,p)) ≡ l
+        limite(llegaAuto(v,c,p))≡ limite(p)
+        limite(cobrar(p,c)) ≡ limite(p)
+
+        precios(nuevoPDZ(c,l,p)) ≡ p
+        precios(llegaAuto(v,c,p)) ≡ precios(p)
+        precios(cobrar(p,c)) ≡ precios(p)
+
+        colaDeCabina(nuevoPDZ(c,l,p) , c) ≡ vacia
+        colaDeCabina(llegaAuto(v,c1,p), c2) ≡ if c1 =obs c2 then
+                                               if tamanio(colaDeCabina(p,c1)) = limite(p) then //(puede haber errores de sintaxis aca, es la primera vez que uso el tad cola)
+                                                 encolar(v,desencolarN(colaDeCabina(p,c2)),tamanio(colaDeCabina(p,c1))/2) //si pase el limite desencolo
+                                               else
+                                                 encolar(v,colaDeCabina(p,c2)) // si no no lo hago 
+                                               fi
+                                              else
+                                                if tamanio(colaDeCabina(p,c1)) = limite(p) then // me fijo si tengo que desencolar aunque haya aniadido a otra fila
+                                                  desencolarN(colaDeCabina(p,c2),tamanio(colaDeCabina(p,c2))) //lo hago
+                                                else
+                                                  colaDeCabina(p,c2) // no lo hago
+                                                fi
+                                              fi
+        colaDeCabina(cobrar(p,c1) , c2) ≡ if c1 =obs c2 then desencolar(colaDeCabina(p,c1)) else colaDeCabina(p,c2) fi
+
+        facturacion(nuevoPDZ(c1,l,p),c2) ≡ 0 
+        facturacion(llegaAuto(v,c1,p),c2) ≡ facturacion(p)
+        facturacion(cobrar(p,c1),c2) ≡ if c1 =obs c2 then
+                                        facturacion(p,c1) + obtener(proximo(colaDeCabina(p,c1)), precios(p))
+                                      else
+                                        facturacion(p,c2)
+                                      fi
+
+        cuantosPasaron?(nuevoPDZ(c,l,p),c1,v1) ≡ 0
+        cuantosPasaron?(llegaAuto(v1,c1,p),c2,v2) ≡ if tamanio(colaDeCabina(c1,p)) = limite(p) then
+          cuantosPasaron?(p,c2,v2) + vehiculosDeTipoQuePasan(colaDeCabina(p,c2))
+        else
+          cuantosPasaron?(p,c2,v2)
+        fi
+        cuantosPasaron?(cobrar(p,c1),c2,v2) ≡ if c1 =obs c2 ∧ proximo(colaDeCabina(p,c2)) = v2 then cuantosPasaron?(p,c2,v2) + 1 else cuantosPasaron?(p,c2,v2) fi
+
+        vehiculosDeTipoQuePasan(c,n,v) ≡ if n=0 then 0 else if proximo(c) = v then 1 + vehiculosDeTipoQuePasan(desencolar(c),n-1,t) else vehiculosDeTipoQuePasan(desencolar(c),n-1,t) fi fi
+Fin TAD
+// no axiomatizo desencolarN porque es una extension simple del tad cola

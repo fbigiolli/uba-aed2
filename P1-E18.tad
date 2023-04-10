@@ -1,0 +1,86 @@
+// asumo que posicion, direccion y tablero son TADs ya definidos
+TAD jugador es nat // cada jugador almacena los puntos correspondientes.
+
+
+TAD juego
+
+    géneros: juego
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat, conj, posicion, direccion, tablero
+
+    observadores básicos:
+        tablero: juego → tablero
+        puntaje: jugador × juego → nat
+        inicio?: juego → bool // ya arranco el juego?
+        posicion: jugador g × juego j → posicion
+        direccion: jugador g × juego j → direccion
+        jugadoresVivos: juego → conj(jugador)
+
+    generadores:
+        nuevoJuego: tablero → juego
+        agregarJugador: jugador j × posicion p × direccion d × juego j → juego {¬jugadorEnCelda(p) ∧ ¬inicio?(j)}
+        mover: jugador g × juego j → juego {inicio?(j) ∧ g ∈ jugadoresVivos(j) ∧ ¬ termino?(j)}
+        cambiarDireccion: jugador g × juego j × direccion d → juego {inicio?(j) ∧ g ∈ jugadoresVivos(j) ∧ ¬termino?(j)}
+
+    otras operaciones:
+        termino?: algo × nat → nat
+        jugadorEnCelda: posicion p × juego j → bool {posicionValida(p,tablero(j))}
+        posicionVacia?: posicion p × juego j → bool {posicionValida(p,tablero(j))}
+        quienEsta?: posicion p × juego j → jugador
+        #jugadoresAgregados: juego → nat
+        siguiente: jugador g × juego j → posicion
+
+    axiomas:
+      tablero(nuevoJuego(t)) ≡ t
+      tablero(agregarJugador(j,p,d)) ≡ tablero(j)
+      tablero(mover(g,j)) ≡ tablero(j)
+      tablero(cambiarDireccion(g,j,d)) ≡ tablero(j)
+
+      puntaje(j,nuevoJuego(t)) ≡ // no tiene sentido porque arranco sin jugadores
+      puntaje(j,agregarJugador(g,p,d,j)) ≡ 0 // porque todavia no arranco el juego si estoy agregando jug 
+      puntaje(g1,mover(g2,j)) ≡ if g1 =obs g2 then
+                                    if posicionVacia?(siguiente(g1,j),j) then
+                                      puntaje(g1,j)
+                                    else
+                                      puntaje(g1,j) + puntaje(quienEsta?(siguiente(g1,j),j)) + 1
+                                    fi
+                                else
+                                  puntaje(g1,j)
+                                fi
+      puntaje(cambiarDireccion(g,j,d)) ≡ puntaje(g,j)
+
+      inicio?(t) ≡ #jugadoresAgregados =obs 64
+
+      #jugadoresAgregados(nuevoJuego(t)) ≡ 0
+      #jugadoresAgregados(agregarJugador(g,p,d,j)) ≡ #jugadoresAgregados(j) + 1
+      #jugadoresAgregados(mover(g,j)) ≡ #jugadoresAgregados(j)
+      #jugadoresAgregados(cambiarDireccion(g,j,d)) ≡ #jugadoresAgregados(j)
+
+      posicion(nuevoJuego..) // no tiene sentido nuevamente
+      posicion(g1,agregarJugador(g2,p,d,j)) ≡ if g1 =obs g2 then p else posicion(g1,j) fi
+      posicion(g1,mover(g2,j)) ≡ if g1 =obs g2 then siguiente(g,j) else posicion(g1) fi
+      posicion(g1,cambiarDireccion(g2,j,d) ≡ posicion(g1,j)
+
+      direccion(nuevoJuego..) // again
+      direccion(g1,agregarJugador(g2,p,d,j)) ≡ if g1 =obs g2 then d else direccion(g1,j) fi
+      direccion(g1,mover(g2,j)) ≡ direccion(g1,j)
+      direccion(g1,cambiarDireccion(g2,j,d)) ≡ if g1 =obs g2 then d else direccion(g1,j) fi
+
+      jugadoresVivos(nuevoJuego(t)) ≡ ∅
+      jugadoresVivos(agregarJugador(g,p,d,j)) ≡ Ag(g,jugadoresVivos(j))
+      jugadoresVivos(mover(g,j)) ≡ if posicionVacia?(siguiente(g,j),j) then jugadoresVivos(j) else jugadoresVivos(j) - quienEsta?(siguiente(g,j),j) fi
+      jugadoresVivos(cambiarDireccion(g,j,d)) ≡ jugadoresVivos(j)
+
+      termino?(nuevoJuego(t)) ≡ false
+      termino?(agregarJugador(g,p,d,j) ≡ termino?(j)
+      termino?(mover(g,j)) ≡ if posiciónVacía(siguiente(g, j), j) then
+                                termino?(j)
+                            else
+                                puntaje(g, mover(g, j)) > 32
+                            fi
+      termino?(cambiarDirección(d, g, j)) ≡ termino(j)
+
+      siguiente(g, j) ≡ siguiente(posición(g, j), dirección(g, j), tablero(j))
+Fin TAD
