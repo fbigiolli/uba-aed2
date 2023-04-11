@@ -1,0 +1,40 @@
+TAD CCC
+
+    géneros: ccc
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    observadores básicos:
+        maestros: ccc → conj(carpintero) // todo carpintero q pertenezca aca tiene que tener lvl 10
+        aprendices: ccc → conj(carpintero)
+        tutor: carpintero ca × ccc c → carpintero {ca ∈ aprendices(c)}
+        nivel: carpintero ca × ccc c → c          {ca ∈ aprendices(c)}
+        desertores: ccc → conj(carpintero)
+
+    generadores:
+        nuevoCCC: conj(carpintero) m → ccc {(∀c:carpintero)(c ∈ m ⟹ nivel(c) =obs 10)} //restriccion de nivel porque son los maestros carpinteros
+        ingresaCarpintero: carpintero ca × ccc → ccc {ca ∉ desertores(c)}
+        subeNivel: carpintero ca × ccc c → ccc {ca ∈ aprendices(c)}
+        desertar: carpintero ca × ccc c → ccc {ca ∈ aprendices(c) ∨ maestros(c) ∧ c ∈ maestros(c) ⟹ #maestros(c) > 1} //hay un abuso de notacion para no escribir dos veces la pertenencia. La segunda restriccion es por enunciado.
+         
+
+    otras operaciones:
+        otraCosa: algo × nat → nat
+
+    axiomas:
+        maestros(nuevoCCC(ms)) ≡ ms
+        maestros(ingresaCarpintero(...)) ≡ maestros(c)
+        maestros(subeNivel(ca,c)) ≡ if nivel(ca) =obs 9 then Ag(ca,maestros(c)) else maestros(c) fi
+        maestros(desertar(ca,c)) ≡ if ca ∈ maestros(c) then maestros(c) - {ca} else maestros(c) fi
+
+        aprendices(nuevoCCC(ms)) ≡ ∅
+        aprendices(ingresaCarpintero(ca,c)) ≡ Ag(ca,aprendices(c))
+        aprendices(subeNivel(ca,c)) ≡ if nivel(ca) = 9 then aprendices(c) - {ca} else aprendices(c) fi
+        aprendices(desertar(ca,c)) ≡ if ca ∈ aprendices(c) then aprendices(c) - {ca} else aprendices(c) fi
+
+        tutor(ca,nuevoCCC) // no tiene sentido 
+        tutor(ca1,ingresaCarpintero(ca2,c)) ≡ // hay que hacer una auxiliar para obtener tutores validos, problema para feli del futuro
+
+Fin TAD
