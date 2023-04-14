@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -std=gnu++11 -ggdb3 -g CMakeFiles/ej7.dir/tests/sdm_tests_bonus.cpp.o CMakeFiles/ej7.dir/src/SistemaDeMensajes.cpp.o CMakeFiles/ej7.dir/src/Internet.cpp.o CMakeFiles/ej7.dir/src/ConexionJugador.cpp.o -o ej7  libgtest.a libgtest_main.a 

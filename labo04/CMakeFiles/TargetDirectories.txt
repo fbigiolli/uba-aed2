@@ -1,0 +1,12 @@
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/gtest.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/gtest_main.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej1.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej3.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej4.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej6.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej7.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej2_correrValgrind.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej3_correrValgrind.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/ej5_correrValgrind.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/edit_cache.dir
+/home/felipe/Documentos/uba-aed2/labo04/CMakeFiles/rebuild_cache.dir
