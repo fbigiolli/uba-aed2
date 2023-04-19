@@ -1,0 +1,29 @@
+// El invariante de representacion debe cumplir:
+// la altura definida en la tupla debe coincidir con la que se calcula en el arbol en si.
+// si izq o der no son nil, entonces la raiz tampoco puede serlo
+// creo que esto es todo pero tengo dudas. No se si haga falta alguna condicion mas
+
+// La funcion de abstraccion basada en observadores se puede definir como
+// e.raiz = raiz(ab), en caso de que tenga hijos e.izq = izq(ab) y e.der = der(ab)
+
+
+
+//para calcular la altura una posible idea es hacer el maximo entre la altura de ambos hijos
+// y asi recursivamente en los hijos de los hijos, etc
+
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ 
+
+
+// f. abstraccion usando generadores
+
+nil() ≡ (0,<>, ,<>) // no se si esta bien la sintaxis pero basicamente la idea es que
+// la altura es 0, y tanto izq como der son tuplas vacias, y en la raiz no hay nada
+// esta mal xq deberia devolver el tipo del TAD, justamente la idea es que la f abstraccion 
+// "traduzca" del modulo al TAD. Creo que no hay que axiomatizar este generador nuevamente
+// porque no recibe parametro de entrada.
+
+bin(izq,r,der) ≡  bin(e.izq,e.raiz,e.der) 
+// no estoy terminando de declarar nada (creo), pero esta es la interpretacion
+// que se supone que deberia hacer de la estructura.
