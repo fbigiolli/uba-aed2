@@ -13,7 +13,7 @@
 
 invariante de representación:
   Rep: estr → bool
-  (∀e: estr) Rep(e) ≡ true ⇔ (altura(construirAB(e)) = e.altura) ∧ (¬(e.izq = NULL) ∨ ¬(e.der = NULL) ⟹ ¬(e.raiz = NULL))
+  (∀e: estr) Rep(e) ≡ true ⇔ (altura(construirAB(e)) = e.altura) ∧ (¬(e.izq = NULL) ∨ ¬(e.der = NULL)) ⟹ ¬(e.raiz = NULL)
 // no se si esta del todo bien, pero la idea es que si el puntero apunta a algo que no contiene ningun tipo de dato deberia dar null,
 // sabiendo esto puedo decir que si el hijo izquierdo o derecho del AB no son null (es decir, que hay algun dato) entonces la raiz
 // no puede ser null, ya que en ese caso no seria posible representar el AB.
