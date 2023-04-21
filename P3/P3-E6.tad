@@ -1,0 +1,26 @@
+// Alta Fiesta
+
+// Para que la estructura sea valida, busco que cumpla:
+1. Los presentes deben estar en la lista de invitados
+2. Los presentes deben pertenecer a un grupo (aunque sean uno solo.)
+3. Los grupos deben tener regalo
+4. Los que pertenezcan a un grupo deben estar presentes (y en consecuencia invitados por la implicacion de 1.)
+
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ (∀i:nat)(0 ≤ i < tamaño(e.presentes) ⟹L e.presentes[i] ∈ e.invitados ∧ // 1.
+                              (∃g:grupo)(e.presentes[i] = significado(e.grupoDe,g)) ∧ // 2.
+                              (∀g:grupo)(definido?(e.grupoDe,g) ⟹ definido?(e.regaloDeGrupo,g)) ∧// 3.
+                              (∀g:grupo)(definido?(e.grupoDe,g) ⟹L (∀p:persona)(p ∈ significado(e.grupoDe,g) ⟹ (∃k:nat)(e.presentes[k] = p) // 4.
+
+
+
+función de abstracción:
+  Abs: estr e → algo { Rep(e) }
+  (∀e: estr) Abs(e) =obs altaFiesta | (∀r:regalo)(r ∈ regalos(altaFiesta) ⟹ (∃g:grupo)(significado(e.regaloDeGrupo,g) = r) ∧ // todos los regalos del conjunto estan.
+                                      (∀g:grupo)(definido?(e.regaloDeGrupo,g) ⟹L significado(e.regaloDeGrupo,g) ∈ regalos(altaFiesta) ∧L // "la vuelta" de la implicacion
+                                      (∀g:grupo)(significado(e.grupoDe,g) = personasPorRegalo(altaFiesta,significado(e.regaloDeGrupo,g)) ∧ // una vez que asumo que los regalos coinciden en TAD y estr, puedo fijarme de este modo si coinciden las personas por regalo.
+                                      (∀p:persona)(p ∈ invitadosPendientes(altaFiesta) ⟹ p ∈ e.invitados ∧ ¬(∃i:nat)(0 ≤ i ≤ tamaño(e.presentes) ∧L e.presentes[i] = p) // todos los invitados pendientes deben pertenecer a los invitados de estr pero no a los presentes.
+                                      ¬(∃g:grupo)(cardinal(obtener(e.grupoDe,g)) > cardinal(obtener(e.grupoDe,grupoMasNumeroso(altaFiesta))) // no hay un grupo con mayor cardinalidad que el mas numeroso obtenido del TAD, pero puede haber uno de igual cardinalidad.  
+
+

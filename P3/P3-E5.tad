@@ -1,0 +1,26 @@
+// lo que chequeo es que todos aquellos que pertenecen a algun conjunto que haya implicado
+// alguna accion hayan entrado en algun momento.
+invariante de representación:
+    Rep: estr → bool
+    (∀e: estr) Rep(e) ≡ true ⇔ (∀p:persona)(p ∈ e.colados ⟹ p ∈ e.entraron ∧ p ∉ e.atendidos) ∧
+                                (∀p:persona)(p ∈ e.atendidos ⟹ p ∈ e.entraron) ∧
+                                (∀p:persona)(p ∈ e.fila ⟹ p ∈ e.entraron) ∧
+                                (∀p:persona)(p ∈ e.atendidos ⟹ p ∉ e.fila) ∧
+                                (∀p:persona)(p ∈ e.entraron ∧ p ∉ e.atendidos ⟹ p ∈ e.fila)
+// habria que hacer una funcion que chequee que pertenecen a la fila dado que es tipo cola y no tipo conjunto
+// pero en esencia seria lo que esta escrito aca.
+
+
+// Me fijo que se correspondan de la estructura con el TAD:
+1. los atendidos 
+2. los colados
+3. los que entraron
+4. los que estan en la fila, teniendo en cuenta sus posiciones en ella.
+
+función de abstracción:
+    Abs: estr e → fila { Rep(e) }
+    (∀e: estr) Abs(e) =obs f | (∀p:persona)(p∈e.atendidos ⟹ fueAtendido?(p,f)) ∧
+                                (∀p:persona)(p∈e.colados ⟹ seColo?(p,f)) ∧
+                                (∀p:persona)(p∈e.entraron ⟹ entro?(p,f)) ∧ 
+                                (esperando(p,f) ⟹ (∃i:nat)(0 ≤ i < largo(e.fila) ∧L (e.fila[i] = p ∧ i = posicion(p,f)))
+

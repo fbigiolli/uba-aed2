@@ -1,0 +1,67 @@
+// El grado debe ser igual a n
+// El elemento n del coeficiente debe ser distinto de 0 para que el grado sea valido
+
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ e.grado = n ∧L e.coef[e.grado] > 0
+
+  función de abstracción:
+    Abs: estr e → polinomio { Rep(e) }
+    (∀e: estr) Abs(e) =obs p | 
+    (∀n: nat)(evaluar(p,n) = evaluarArray(π2(e),n))
+
+int evaluarArray(array a, int n){
+  res = 0;
+  for(int i=0 , i<a.size(), i++){
+    res += a[i] * n; 
+  }
+  return res;
+} 
+
+// que se yo como se hace en el lenguaje raro q piden, en cpp es asi (masomenos)
+
+Interfaz
+
+    se explica con: Polinomio
+
+    géneros: polinomio
+
+    operaciones:
+        cte(in k: nat) → res: polinomio
+        Pre ≡ {true}
+        Post ≡ {res =obs Cte(k)}
+        Descripción: Genera un polinomio grado 0
+        Complejidad: Θ(...) // creo que estos 2 no se completan todavia, los dejo en blanco
+        Aliasing: ...
+
+        X() → res:polinomio
+        Pre ≡ {true}
+        Post ≡ {res =obs X()}
+        Descripción: Genera un polinomio grado 1
+
+        suma(in a:polinomio, in b:polinomio) → res:polinomio
+        Pre ≡ {true}
+        Post ≡ {res =obs a + b}
+        Descripción: Suma dos polinomios
+
+        producto(in a:polinomio, in b:polinomio) → res:polinomio
+        Pre ≡ {true}
+        Post ≡ {res =obs a * b}
+        Descripción: Multiplica dos polinomios
+
+        evaluar(in p:polinomio, in n:nat) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs evaluar(p,n) }
+        Descripción: Evalua los polinomios (y si, que va a hacer)
+
+        //Hasta aca lo que entendi que estoy haciendo es que en la post de la funcion
+        //pongo la operacion que ya hice en mi TAD y que es justamente la que espero que se cumpla
+        //al llevar a cabo alguna de las funciones de la interfaz
+
+    algoritmos:
+      // y ahora que llegue aca me doy cuenta que lo que hice arriba en c++ iria aca aunque creo que la idea
+      // no es que este hecho en c++ si no en pseudocodigo o algo por el estilo
+        iFunción(in arg1: α, in/out arg2: algo(α)) → res: bool
+            ...
+
+Fin Interfaz

@@ -1,0 +1,10 @@
+// oficina estatal
+
+// Invariante de representacion:
+Para que la estructura sea valida:
+1. Los datos del diccionario tramitesXCat deben coincidir con los del diccionario tramites (cada tramite debe estar en su tramitesXCat correspondiente)
+2. Todo tramite en pendPrioritarios debe estar tambien en pendientes.
+3. Todo tramite en pendPrioritarios debe tener una categoria prioritaria.
+
+Sobre catPrioritarias no digo nada porque siempre y cuando cumpla con el tipo es una representación valida.
+
