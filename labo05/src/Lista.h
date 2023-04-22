@@ -37,6 +37,7 @@ public:
      * Agrega un elemento al principio de la Lista.
      * @param elem elemento a agregar
      */
+
     void agregarAdelante(const int& elem);
 
     /**
@@ -95,6 +96,10 @@ private:
     };
 
     Nodo* prim;
+
+    void copiarNodos(const Lista& l);
+
+    void destruirNodos();
 
 };
 

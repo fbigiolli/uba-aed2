@@ -6,11 +6,21 @@ Lista::Lista() : prim() {
 }
 
 Lista::Lista(const Lista& l) : Lista() {
-    //Inicializa una lista vacía y luego utiliza operator= para no duplicar el código de la copia de una lista.
-    *this = l;
+    copiarNodos(l);
+    
 }
 
 Lista::~Lista() {
+    destruirNodos();
+}
+
+Lista& Lista::operator=(const Lista& aCopiar) {
+    destruirNodos();
+    copiarNodos(aCopiar);
+    return *this;
+}
+
+void Lista::destruirNodos(){
     Nodo* temp = prim;
     while (temp != NULL)
     {
@@ -21,9 +31,13 @@ Lista::~Lista() {
     prim = NULL;
 }
 
-Lista& Lista::operator=(const Lista& aCopiar) {
-    // Completar
-    return *this;
+void Lista::copiarNodos(const Lista &l){
+    Nodo* actual = l.prim;
+    while(actual != NULL)
+    {
+        agregarAtras(actual->data);
+        actual = actual->next;
+    }
 }
 
 void Lista::agregarAdelante(const int& elem) {
@@ -61,12 +75,40 @@ void Lista::agregarAtras(const int& elem) {
 }
 
 void Lista::eliminar(Nat i) {
-    Nodo* temp = prim;
+    Nodo* actual = this->prim;
     for (int j = 0; j < i; j++)
     {
-        temp = temp->next;
+        actual = actual->next;
     }
-    delete temp;
+
+    // caso donde borro el primero 
+    if (i==0)
+    {
+        //lista con un solo elemento
+        if (longitud() == 1)
+        {
+            this->prim=nullptr;
+        }
+        //lista con mas de un elemento
+        else
+        {
+            (actual->next)->prev = actual->prev;
+            this->prim = this->prim->next;
+        }
+    }
+    //caso borde eliminando el ultimo
+    else if (i == longitud() - 1)
+    {
+        (actual->prev)->next = actual->next;
+    }
+    //cualquier elemento que no este en los bordes
+    else
+    {
+        (actual->next)->prev=actual->prev;
+        (actual->prev)->next=actual->next;
+    }
+    //borro el elemento en cuestion
+    delete actual;
 }
 
 int Lista::longitud() const {
