@@ -8,17 +8,25 @@ invariante de representación:
   función de abstracción:
     Abs: estr e → polinomio { Rep(e) }
     (∀e: estr) Abs(e) =obs p | 
-    (∀n: nat)(evaluar(p,n) = evaluarArray(π2(e),n))
+    (∀n: nat)(evaluar(p,n) = evaluarArray(0,π2(e))
 
-int evaluarArray(array a, int n){
-  res = 0;
-  for(int i=0 , i<a.size(), i++){
-    res += a[i] * n; 
-  }
-  return res;
-} 
+// Asumiendo que al pasar por la funcion de abstraccion, el array pasa de ser parte del modulo array
+// al TAD arreglo dimensionable se tienen a disposicion las operaciones del mismo.
 
-// que se yo como se hace en el lenguaje raro q piden, en cpp es asi (masomenos)
+evaluarArrayDesde extiende TAD ARREGLO DIMENSIONABLE
+
+evaluarArrayDesde: grado × ad × n → nat
+
+evaluarArrayDesde(gr,a,n) ≡ if gr =obs tam(a) then
+                              a[i]*(n^gr)
+                            else
+                              a[i]*(n^gr) + evaluarArrayDesde(gr+1,a,n)
+                            fi 
+//evaluarArrayDesde evalua el polinomio en un n dado empezando por el coeficiente independiente, y teniendo como
+//caso base el momento en el que se llega al mayor grado posible en el polinomio. Notar que el contexto en el que
+//es llamada en la funcion de abstraccion es lo que hace que arranque desde el C.I., evaluando de esta forma
+//todo el polinomio y no solo una parte.
+
 
 Interfaz
 
@@ -54,14 +62,15 @@ Interfaz
         Post ≡ { res =obs evaluar(p,n) }
         Descripción: Evalua los polinomios (y si, que va a hacer)
 
-        //Hasta aca lo que entendi que estoy haciendo es que en la post de la funcion
-        //pongo la operacion que ya hice en mi TAD y que es justamente la que espero que se cumpla
-        //al llevar a cabo alguna de las funciones de la interfaz
-
     algoritmos:
-      // y ahora que llegue aca me doy cuenta que lo que hice arriba en c++ iria aca aunque creo que la idea
-      // no es que este hecho en c++ si no en pseudocodigo o algo por el estilo
+      // la idea es hacerlo en pseudocodigo, aca va en c++
         iFunción(in arg1: α, in/out arg2: algo(α)) → res: bool
-            ...
+            int evaluarArray(array a, int n){
+              res = 0;
+              for(int i=0 , i<a.size(), i++){
+                res += a[i] * n; 
+              }
+              return res;
+            } 
 
 Fin Interfaz

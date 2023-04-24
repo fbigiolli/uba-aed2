@@ -3,14 +3,6 @@
 // si izq o der no son nil, entonces la raiz tampoco puede serlo
 // creo que esto es todo pero tengo dudas. No se si haga falta alguna condicion mas
 
-// La funcion de abstraccion basada en observadores se puede definir como
-// e.raiz = raiz(ab), en caso de que tenga hijos e.izq = izq(ab) y e.der = der(ab)
-
-
-
-//para calcular la altura una posible idea es hacer el maximo entre la altura de ambos hijos
-// y asi recursivamente en los hijos de los hijos, etc
-
 invariante de representación:
   Rep: estr → bool
   (∀e: estr) Rep(e) ≡ true ⇔ (altura(construirAB(e)) = e.altura) ∧ (¬(e.izq = NULL) ∨ ¬(e.der = NULL)) ⟹ ¬(e.raiz = NULL)

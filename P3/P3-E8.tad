@@ -1,5 +1,9 @@
 // oficina estatal
 
+//Hecho en clase, el PDF esta en el campus
+
+
+
 // Invariante de representacion:
 Para que la estructura sea valida:
 1. Los datos del diccionario tramitesXCat deben coincidir con los del diccionario tramites (cada tramite debe estar en su tramitesXCat correspondiente)
@@ -8,3 +12,6 @@ Para que la estructura sea valida:
 
 Sobre catPrioritarias no digo nada porque siempre y cuando cumpla con el tipo es una representación valida.
 
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ 
