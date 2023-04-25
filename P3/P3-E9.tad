@@ -1,0 +1,54 @@
+// Planta industrial
+
+Invariante de representación:
+//Interpretacion: Aquellas alarmas que pertenecen al diccionario alarmas son las que estan encendidas,
+//por lo tanto, para que la estructura sea valida debo verificar que:
+1. Que la medicion de un sensor supere el umbral implica que el conjunto de alarmas asociadas a dicho sensor esten activadas, es decir, que
+pertenezcan al diccionario alarmas.
+2. La vuelta de la implicacion anterior, si una alarma pertenece al diccionario alarmas entonces debe estar asociada a dicho sensor en el 
+diccionario sensores y la medicion de dicho sensor debe superar el umbral.
+
+
+Voy a usar como reemplazo sintactico :
+sensores ≡ π2(e)
+alarmas ≡  π1(e)
+medicion(s,sensores) ≡ π3(obtener(s,sensores)) 
+umbral(s,sensores) ≡ π2(obtener(s,sensores))) 
+conjAlarmas(s,sensores) ≡ π1(obtener(s,sensores))) 
+
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ (1) ^ (2)
+                                 
+                                    
+(1) ≡ (∀s:sensor)(def?(s,sensores) ⟹L ((medicion(s,sensores)  > umbral(s,sensores)) ⟹ 
+                                        (∀a:alarma)(a ∈ conjAlarmas(s,sensores) ⟹ def?(a,alarmas)))
+
+(2) ≡ (∀a:alarma)(def?(a,alarmas) ⟹ (∃s:sensor)(def?(s,sensores) ∧L (a ∈ conjAlarmas(s,sensores) ∧ 
+                                                  medicion(s,sensores) > umbral(s,sensores))
+
+
+
+Al chequear esto en el invariante de representación, puedo usar solamente el diccionario sensores para 
+obtener todos los datos necesarios para "traducir" al TAD, ya que todas las alarmas estan representadas
+correctamente en este ultimo.
+
+Funcion de abstracción:
+
+función de abstracción:
+  Abs: estr e → Planta { Rep(e) }
+  (∀e: estr) Abs(e) =obs p | (3) ∧ (4) ∧ (5) ∧ (6) ∧ (7) ∧ (8)
+
+(3) ≡ (∀a:alarma)(∀s:sensor)(def?(s,sensores) ⟹L (def?(a,conjAlarmas(s,sensores))) ⟹ esAlarma?(p,a))
+// Todas las alarmas definidas en sensores estan en el TAD
+(4) ≡ (∀s:sensor)(def?(s,sensores) ⟹L esSensor?(p,s))
+//Todos los sensores definidos en sensores estan en el TAD
+(5) ≡ (∀s:sensor)(def?(s,sensores) ⟹L ((∀a:alarma)(a ∈ conjAlarmas(s,sensores)) ⟹ s ∈ sensoresAlarma(p,a))
+//Para toda alarma que pertenezca al conjAlarmas de algun sensor valido, implica que ese sensor va a pertenecer a sensoresAlarma (observador del tad) de dicha alarma.
+(6) ≡ (∀s:sensor)(def?(s,sensores) ⟹L umbral(s,sensores) = umbral(p,s))
+//El umbral de todo sensor definido corresponde con el del TAD
+(7) ≡ (∀s:sensor)(def?(s,sensores) ⟹L medicion(s,sensores = medicion(p,s)))
+//La medicion de todo sensor definido corresponde con el del TAD
+
+No hace falta axiomatizar sobre encendida ya que es otra operacion, y la informacion que nos da se puede inferir de los observadores en si
+(comparando umbral con medicion del sensor y viendo a cual alarma se asocia), por lo tanto, no es necesario "traducirlo" en la f. de abstracción
