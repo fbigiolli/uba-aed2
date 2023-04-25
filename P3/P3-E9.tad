@@ -27,7 +27,9 @@ invariante de representación:
 (2) ≡ (∀a:alarma)(def?(a,alarmas) ⟹ (∃s:sensor)(def?(s,sensores) ∧L (a ∈ conjAlarmas(s,sensores) ∧ 
                                                   medicion(s,sensores) > umbral(s,sensores))
 
-
+Hay un tema con (2), y es que solo se fija que exista UN sensor, pero dada la informacion que tenemos a disposicion
+no veo una forma posible de pedir que esten TODOS los sensores asociados a la alarma. Igual, creo que la estructura
+sigue siendo valida ya que al menos habra un sensor asociado a la alarma, lo cual hace que la estructura sea valida.
 
 Al chequear esto en el invariante de representación, puedo usar solamente el diccionario sensores para 
 obtener todos los datos necesarios para "traducir" al TAD, ya que todas las alarmas estan representadas
@@ -52,3 +54,7 @@ función de abstracción:
 
 No hace falta axiomatizar sobre encendida ya que es otra operacion, y la informacion que nos da se puede inferir de los observadores en si
 (comparando umbral con medicion del sensor y viendo a cual alarma se asocia), por lo tanto, no es necesario "traducirlo" en la f. de abstracción
+
+Nota: no hace falta redeclarar el forall tantas veces, incluso no hace falta pedir tantas veces que el sensor este definido si usamos un ∧L despues
+de chequear que los sensores esten. De todas formas, preferi hacerlo asi para poder separar en items lo que pido, y que cada item se pueda leer 
+por separado sin necesidad de interpretar lo que "vamos acumulando" con los anteriores puntos de la funcion.

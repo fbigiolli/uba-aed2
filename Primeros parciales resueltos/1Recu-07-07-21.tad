@@ -1,0 +1,70 @@
+// Ejercicio 1. 
+
+TAD MulticonjuntoExtendido extiende Multiconjunto
+
+otras operaciones:
+  eliminarTodos: mconj × nat → mconj
+  Nrepetidos: mconj × nat → conj
+  maxRepetidos: mconj m → conj {¬(∅?(m))}
+  maxConjNrepetidosPosible: mconj × nat → conj
+
+axiomas: ∀mconj:multiconj(α), ∀elem : α, ∀n:nat
+
+eliminarTodos(mconj,elem) ≡ if ¬(elem ∈ mconj) then
+                            mconj
+                           else
+                              eliminarTodos(mconj-{elem},elem)
+                           fi
+
+Nrepetidos(mconj,n) ≡ if ∅?(mconj) then
+  ∅
+else
+  if #(dameUno(mconj),mconj) ≥ n then
+    Ag(dameUno(mconj),Nrepetidos(eliminarTodos(mconj,dameUno(mconj),n))
+  else
+    Nrepetidos(eliminarTodos(mconj),n)
+  fi
+fi
+//Nota: Creo que es valido usar sinUno en vez de eliminarTodos para la recursion, pero
+//llegariamos al mismo resultado porque no puede haber elem repetidos en el conjunto
+//respuesta, y de esta forma el procedimiento es mas eficiente.
+
+
+maxRepetidos(mconj) ≡ maxConjNrepetidosPosible(mconj,1)
+
+//La idea es calcular el conjunto de Nrepetidos con el mayor n posible. Cuando tengo el caso
+//en el que no hay Nrepetidos, devuelvo el conjunto de Nrepetidos anterior y esos seran los 
+//max repetidos.
+maxConjNrepetidosPosible(mconj,n) ≡ if ∅?(Nrepetidos(mconj,n+1)) then
+  Nrepetidos(mconj,n)
+else
+  maxConjNrepetidosPosible(mconj,n+1)
+fi 
+
+
+// Ejercicio 2.
+
+TAD Tablero
+
+    géneros: algo
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    observadores básicos:
+        tamano: tablero → (nat,nat)
+        posCabezal: tablero → posicion
+        celdasConBolita: tablero → conj{celda}
+
+    generadores:
+        nuevoTablero: → tablero
+        
+
+    otras operaciones:
+        otraCosa: algo × nat → nat
+
+    axiomas:
+        ...
+
+Fin TAD
