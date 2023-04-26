@@ -59,7 +59,7 @@ TAD Tablero
 
     generadores:
         nuevoTablero: → tablero
-        
+
 
     otras operaciones:
         otraCosa: algo × nat → nat
@@ -68,3 +68,49 @@ TAD Tablero
         ...
 
 Fin TAD
+
+
+// Ejercicio 5.
+
+Para que sea una estructura valida, el Invariante de representación debe cumplir:
+1. Que una persona pertenezca a la secuencia de vacunados para alguna ciudad implica que su residencia es en dicha ciudad.
+2. Que una persona pertenezca al conjunto de personas esperando para alguna ciudad implica que su residencia es en dicha ciudad.
+3. En el conjunto de frascos no puede haber dos tuplas que tengan la misma ciudad como parametro.
+4. Todos aquellos que pertenezcan al diccionario de vacunados no pueden pertenecer al diccionario esperando.
+5. Por dato del enunciado, que haya frascos disponibles en una ciudad implica que no hay mas de 4 personas esperando por la vacuna.
+11. Una persona no puede estar vacunada mas de una vez.
+
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ (1) ∧ (2) ∧ (3) ∧ (4) ∧ (5) ∧ (11)
+
+(1) ≡ (∀c:ciudad)((c ∈ claves(e.vacunados)) ⟹L ((∀p:persona)(esta?(p,obtener(c,e.vacunados)) ⟹ (def?(p,e.residencia) ∧L obtener(p,e.residencia) = c)
+(2) ≡ (∀c:ciudad)((c ∈ claves(e.vacunados)) ⟹L ((∀p:persona)(p ∈ obtener(c,e.vacunados)) ⟹ (def?(p,e.residencia) ∧L obtener(p,e.residencia) =obs c))
+(3) ≡ (∀t1:<ciudad,nat>)(t1 ∈ e.frascos ⟹ ¬(∃t2:<ciudad,nat)(t2 ∈ e.frascos ∧ π1(t1) = π1(t2)))
+(4) ≡ (∀c:ciudad)((c ∈ claves(e.vacunados)) ⟹L ((∀p:persona)(esta?(p,obtener(c,e.vacunados))) ⟹ ¬(p ∈ obtener(c,e.esperando))))
+(5) ≡ (∀t:<ciudad,nat>)((t ∈ e.frascos ∧ π2(t) > 0) ⟹ (def?(π1(t),e.esperando) ∧L #(obtener(π1(t),e.esperando)) < 5))
+(11) ≡ (∀p1,p2:persona)((esta?(p1,obtener(c,e.vacunados)) ∧ esta?(p2,obtener(c,e.vacunados))) ⟹ p1 ≠ p2)
+
+función de abstracción:
+  Abs: estr e → sv { Rep(e) }
+  (∀e: estr) Abs(e) =obs sv | (6) ∧ (7) ∧ (8) ∧ (9) ∧ (10)
+
+//Todas las ciudades del TAD estan representadas en los diccionarios y conjuntos de la estructura.
+(6) ≡ (∀c:ciudad)(c ∈ ciudades(sv) ⟹ (c ∈ claves(e.vacunados) ∧ c ∈ claves(e.esperando) ∧
+                                        (∃t:<ciudadTupla,nat>)(ciudadTupla = c ∧ t ∈ e.frascos))
+//Nota: Uso el existe para la tupla porque anteriormente en el invariante pedi que no hubiera tuplas con ciudad repetida. De esta forma,
+//El existe apunta a la unica tupla posible que hay.
+
+//La residencia de las personas definidas en la estructura se corresponde con las del TAD.
+(7) ≡ (∀p:persona)((def?(p,e.residencia) ∧L obtener(p,e.residencia) ∈ ciudades(sv) ) ⟹ (p ∈ residentes(sv,(obtener(p,e.residencia)))))  
+
+//Toda persona que este vacunada en la estructura tambien debe estarlo en el TAD.
+(8) ≡ (∀c:ciudad)(c ∈ ciudades(sv) ⟹L (∀p:persona)(esta?(p,obtener(c,e.vacunados)) ⟹ p ∈ vacunados(c,sv)))
+
+//Toda persona que este esperando en la estructura tambien debe estarlo en el TAD.
+(9) ≡ (∀c:ciudad)(c ∈ ciudades(sv) ⟹L ((∀p:persona)(p ∈ obtener(c,e.esperando) ⟹ p ∈ esperando(c,sv))
+
+//La cantidad de frascos guardada en el conjunto de tuplas se corresponde con la del TAD. 
+(10) ≡ (∀c:ciudad)(c ∈ ciudades(sv) ⟹L (∀t:<ciudadTupla,nFrascos:>)(c = ciudadTupla ∧ nFrascos = #frascosPorCiudad(sv,c)))
+//Nota: Uso el para todo porque anteriormente en el invariante pedi que hubiera maximo UNA tupla por ciudad, por lo tanto se que esta tupla es unica.
+
