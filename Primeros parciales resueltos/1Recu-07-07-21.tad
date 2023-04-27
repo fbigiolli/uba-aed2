@@ -56,19 +56,132 @@ TAD Tablero
         tamano: tablero → (nat,nat)
         posCabezal: tablero → posicion
         celdasConBolita: tablero → conj{celda}
+        bolitasEnCelda: tablero t × color → nat {posCabezal(t) ∈ celdasConBolita(t)}
+        // Hago esta restriccion para no tener que axiomatizar dos veces lo que pasaria al salirme del tablero con el cabezal.
+        // Ademas, al saber cuales celdas tienen bolita con el observador anterior no es necesario acceder a las celdas que ya
+        // sabemos que no tienen una bolita para caracterizar el tablero.
 
     generadores:
         nuevoTablero: → tablero
-
+        moverCabezal: direccion × tablero → tablero
+        ponerBolita: color c × tablero → tablero {c ∈ color} // con esto hago ref al TAD color, no se si es del todo correcto
 
     otras operaciones:
-        otraCosa: algo × nat → nat
+        esBorde?: posicion × tablero → bool
+        movioAfueraArriba: direccion × tablero → bool
+        movioAfueraAbajo: direccion × tablero → bool
+        movioAfueraIzq: direccion × tablero → bool 
+        movioAfueraDer: direccion × tablero → bool
+        valorDireccion: direccion → (nat,nat)
+        actualizarPosicionBolitas: (nat,nat) × conj{celda} × conj{celda} → conj{celda}
 
-    axiomas:
-        ...
+    axiomas: ∀d:direccion, ∀t:tablero, ∀p:posicion, ∀c,c1,c2:color, ∀bolitas:conj{celda}, ∀valDir:(nat,nat)
+        tamano(nuevoTablero) ≡ (1,1)
+        tamano(moverCabezal(d,t)) ≡ if movioAfueraArriba?(d,t) ∨ movioAfueraAbajo?(d,t) then
+                                      tamano(t) + (1,0)
+                                    else
+                                      if movioAfueraIzq(d,t) ∨ movioAfueraDer(d,t) then
+                                        tamano(t) + (0,1)
+                                      else
+                                        tamano(t)
+                                      fi
+                                    fi
+
+        tamano(ponerBolita(c,t)) ≡ tamano(t)
+
+        posCabezal(nuevoTablero) ≡ (1,1)
+        posCabezal(moverCabezal(d,t)) ≡ if movioAfueraArriba(d,t) ∨ movioAfueraDer(d,t) ∨ movioAfueraAbajo(d,t) ∨ movioAfueraIzq(d,t) then
+                                          posCabezal(d,t)
+                                          //Devuelvo la misma posicion porque en el caso de que se mueva para afuera, se agrega la columna y la posicion del cabezal en el nuevo
+                                          //tablero sigue siendo la misma, solamente se actualiza la posicion del resto de celdas
+                                        else
+                                          posCabezal(d,t) + valorDireccion(d)
+                                        fi
+
+        posCabezal(ponerBolita(c,t)) ≡ posCabezal(t)
+
+        celdasConBolita(nuevoTablero) ≡ ∅
+        celdasConBolita(ponerBolita(c,t)) ≡ if ¬(posCabezal(t) ∈ celdasConBolita(t))  then
+                                              Ag(posCabezal(t),celdasConBolita(t))
+                                            else
+                                              celdasConBolita(t)
+                                            fi
+
+        celdasConBolita(moverCabezal(d,t)) ≡ if movioAfueraArriba(d,t) ∨ movioAfueraDer(d,t) ∨ movioAfueraAbajo(d,t) ∨ movioAfueraIzq(d,t) then
+          actualizarPosicionBolitas(valorDireccion(d),bolitasEnCelda(t),∅)
+        else
+          celdasConBolita(t)
+        fi
+
+        bolitasEnCelda(nuevoTablero,c) ≡ 0
+        bolitasEnCelda(moverCabezal(d,t),c) ≡ nroBolitas(posCabezal(t),c)
+        bolitasEnCelda(ponerBolita(c1,t),c2) ≡ nroBolitas(poner(posCabezal(t),c1),c2)
+
+        ----------- otras operaciones ----------- 
+
+        //La idea de esta funcion es: Segun el movimiento que hayamos hecho del cabezal, entonces tenemos o que correr todas las bolitas 1 posicion arriba
+        //o abajo, o 1 posicion izquierda o derecha (valDir). Entonces, le paso el conjunto de bolitas que tenia el tablero sin actualizar, y un conjunto  res
+        //vacio, y voy guardando todas las direcciones actualizadas en res, para despues devolverlo como resultado del nuevo conjunto de bolitas.
+
+        actualizarPosicionBolitas(valDir,,bolitas,res) ≡ if ∅?(bolitas) then
+          res
+        else
+          actualizarPosicionBolitas(valDir,sinUno(bolitas,Ag(dameUno(bolitas)) + valDir,res)) 
+        fi
+
+        movioAfueraArriba(d,t) ≡ if π1(posCabezal(t)) =obs 0 ∧ d =obs norte then
+          true
+        else
+          false
+        fi
+
+        movioAfueraAbajo(d,t) ≡ if π1(posCabezal(t)) =obs tamano(t) ∧ d =obs sur then
+          true
+        else
+          false
+        fi
+
+        movioAfueraDer(d,t) ≡ if π2(posCabezal(t)) =obs tamano(t) ∧ d =obs este then
+          true
+        else
+          false
+        fi
+
+        movioAfueraIzq(d,t) ≡ if π2(posCabezal(t)) =obs 0 ∧ d =obs oeste then
+          true
+        else
+          false
+        fi
+
+        valorDireccion(d) ≡ if d=obs norte then
+          (1,0)
+        else
+          if d=obs sur then
+            (-1,0)
+          else
+            if d=obs este then
+              (0,1)
+            else
+              (0,-1)
+            fi
+          fi
+        fi
 
 Fin TAD
 
+// Ejercicio 4.
+
+La complejidad de mejor caso es cuando la matriz es vacia, ya que 
+la guarda del while nunca va a ser true porque i se inicializa en 0, y n tambien en 0, entonces
+al comparar 0<0 obtengo false, por lo tanto no entro al ciclo y la complejidad es θ(1)
+Ademas, tambien obtengo complejidad θ(1) cuando el segundo elemento de la primer fila no es 0, ya que 
+entro al while, evaluo la primer posicion, paso a la segunda y al encontrarme que el elemento es distinto de 0
+termino el while y devuelvo false.
+
+Por otro lado, la complejidad de peor caso es θ(M), que corresponde a la familia de matrices diagonales,
+ya que para asegurarnos de que efectivamente sean diagonales el algoritmo recorre la matriz entera.
+
+//Nota: M es n*n donde n es el numero de filas y columnas de la matriz
 
 // Ejercicio 5.
 
