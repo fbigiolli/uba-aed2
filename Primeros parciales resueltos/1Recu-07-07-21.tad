@@ -169,6 +169,24 @@ TAD Tablero
 
 Fin TAD
 
+// Ejercicio 3.
+
+1. Falso porque a es estrictamente mayor a b, y θ es una cota exacta. Por lo tanto,
+hay casos en los que ambas expresiones son distintas, y por lo tanto no pueden acotarse con θ
+Por ejemplo, tomando a=5, b=1, n=1 (n+a)^b=6 y (n+b)^a=32
+
+2. Verdadero porque que a sea estrictamente mayor que b implica que para todo n en el que evaluemos
+ambas formulas (n+b)! sera menor que (n+a)!, pudiendo de esta forma ser cota inferior
+
+3. Depende de la complejidad que tenga f(n), porque si por ejemplo f(n) tiene complejidad Θ(n^8), y sabemos
+a = 2 entonces O(n^2) no la acotaria ni siquiera antes de elevarl
+
+4. Verdadero porque a es mayor que b, y aca si que O esta basada en la complejidad de f(n). 
+
+5. Verdadero porque n^a es mayor que n^b, y sabemos que f(n) tiene complejidad exactamente de n(a)
+ entonces n^b acota por debajo a f(n)
+
+6. Verdadero?
 // Ejercicio 4.
 
 La complejidad de mejor caso es cuando la matriz es vacia, ya que 

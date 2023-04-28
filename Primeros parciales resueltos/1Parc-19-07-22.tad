@@ -1,0 +1,133 @@
+// Ejercicio 1. 
+
+TAD ArbolBinarioExtendido extiende arbolBinario(α)
+
+otras operaciones:
+  sumar: ab(nat) × ab(nat) → ab(nat)
+  maximo: ab(nat) → nat
+
+  axiomas:
+  maximo(ab) ≡ if nil?(ab) then
+                0
+              else
+                max3(maximo(izq(ab),raiz(ab),maximo(der(ab))))
+              fi
+
+// Una vez que se llega al nil, la funcion se va evaluando de abajo hacia arriba.
+// Arranca con las hojas que se comparan con 2 nil, luego eso se compara con la raiz 
+// y el otro hijo (que si es nil, da 0), y asi hasta llegar a la raiz "madre" de todo el ab.
+
+  sumar(a1,a2) ≡ if nil(a) ∧ nil(b) then
+    nil
+  else
+    if nil?(a) ∧ ¬nil?(b) then
+    // ya se vacio a1
+      bin(sumar(nil,izq(b)),raiz(b),sumar(nil,der(b)))
+    else
+      if ¬nil?(a) ∧ nil?(b) then
+      // ya se vacio a2
+        bin(sumar(izq(a),nil),raiz(a),sumar(der(a),nil))
+      else
+      // ambos siguen teniendo elementos 
+        bin(sumar(izq(a),izq(b)),raiz(a)+raiz(b),sumar(der(a),der(b)))
+      fi
+    fi
+  fi
+
+  // La funcion va recorriendo los arboles y sumando las raices hasta que se
+  // encuentra con el final de uno. A partir de ahi no hace la suma si no que 
+  // pone el elemento del ab no nil.
+
+  Fin TAD
+
+  // Ejercicio 2.
+TAD Stock
+
+axiomas: ∀p,p1,p2,sust:producto, ∀s:stock, ∀u:umbral, ∀c:nat
+
+tieneSustituto?(p,abrirTienda) ≡ no se axiomatiza porque p ∉ productos(s)
+
+tieneSustituto?(p1,nuevoProducto(s,p2,u)) ≡ if p1 =obs p2 then
+  false
+else
+  tieneSustituto?(p1,s)
+fi
+
+tieneSustituto?(p1,compra(s,p2,c)) ≡ tieneSustituto?(p1,s)
+tieneSustituto?(p1,venta(s,p2,c)) ≡ tieneSustituto?(p1,s)
+tieneSustituto?(p1,sustituto(s,p2,sust)) ≡ if p1 =obs p2 ∨ tieneSustituto?(p1,s) then
+                                            true
+                                           else
+                                            false
+                                           fi
+
+sustituto(p,abrirTienda) ≡ no se axiomatiza porque  p ∉ productos(s)
+sustituto(p1,nuevoProducto(s,p2,u)) ≡ sustituto(p1,s)
+sustituto(p1,compra(s,p2,c)) ≡ sustituto(p1)
+sustituto(p1,venta(s,p2,c)) ≡ sustituto(p1)
+sustituto(p1,sustituto(s,p2,sust)) ≡ if p1 =obs p2 then
+                                      sust
+                                     else
+                                      sustituto(p1)
+                                     fi
+
+#disponibles(p,abrirTienda) ≡ no se axiomatiza porque p ∉ productos(s)
+#disponibles(p1,nuevoProducto(s,p2,u)) ≡ if p1 =obs p2 then
+                                           0
+                                         else
+                                           #disponibles(p1,s)
+                                         fi
+
+#disponibles(p1,compra(s,p2,c)) ≡ if p1 =obs p2 then
+                                    #disponibles(p1,s) + c
+                                  else
+                                    #disponibles(p1,s)
+                                  fi
+
+#disponibles(p1,venta(s,p2,c)) ≡ if p1 =obs p2 then
+                                   if #disponibles(p1,s) ≤ c then
+                                     0
+                                   else
+                                     #disponibles(p1,s) - c
+                                   fi
+                                 else
+                                   #disponibles(p1,s)
+                                 fi
+
+#disponibles(p1,sustituto(s,p2,c)) ≡ #disponibles(p1,s)
+
+#disponiblesSust(s,p) ≡ #disponibles(sustituto(p,s),s)
+//Nota: Hay que expandir la restriccion de la funcion pidiendo tieneSustituto?(p,s)
+
+bajoUmbral(s) ≡ bajoUmbralAux(s,productos(s))
+
+// Funcion que saca los productos que no estan bajoUmbral del conjunto de prods
+bajoUmbralAux(s,prods) ≡ if ∅?(prods) then
+  ∅
+else
+  if tieneSustituto?(dameUno(prods),s) then
+  // si tiene sustituto
+    if #disponibles(dameUno(prods),s) + #disponibles(sustituto(dameUno(prods)),s) < umbral(s,dameUno(prods)) then
+    // si los disponibles del producto y su sustituto son menores al umbral
+      Ag(dameUno(prods), bajoUmbralAux(sinUno(prods,s)))
+      // lo agrego
+    else
+      bajoUmbralAux(sinUno(prods),s)
+      //sigo la recursion sacando ese producto del conjunto
+    fi
+  else
+    if #disponibles(dameUno(prods),s) < umbral(s,dameUno(prods)) then
+    // no tiene sustituto  y esta por debajo del umbral
+      Ag(dameUno(prods),bajoUmbralAux(sinUno(prods),s))
+      // lo agrego
+    else
+      bajoUmbralAux(sinUno(prods),s)
+      // sigo la recursion sacando ese producto del conjunto
+    fi
+  fi
+fi
+
+Fin TAD
+
+// Ejercicio 3.
+
