@@ -131,3 +131,83 @@ Fin TAD
 
 // Ejercicio 3.
 
+(a).
+Franjas horarias, materias, aulas, capacidad del aula 
+Para cada aula, en su correspondiente franja horaria:
+1- Esta asignada?
+2- A que materia esta asignada?
+Para el 4to item del enunciado lo resolvemos con otra operacion, porque la informacion se desprende
+de los 3 items listados anteriormente.
+
+(b).
+TAD Dia es string
+observadores básicos:
+  franjasHorarias: aulasinf → conj(franja)
+  //franjas horarias del cuatrimestre
+  materias: aulasinf → conj(materia)
+  //materias del cuatrimestre
+  aulas: aulasinf → conj(aula)
+  //conjunto de aulas en el cuatrimestre
+  capacidad: aula a × aulasinf inf → nat {a∈aulas(inf)}
+  //capacidad de un aula a 
+  reservas: aula a × aulasinf inf → dicc(materia,conj(franja)) {a ∈ aulas(inf)}
+  //diccionario de reservas para un aula en especifico, en el que vemos por cada materia el conjunto de franjas que reservo para dicha aula.
+
+(c).
+igualdad observacional:
+  (∀aulasinf₁, aulasinf₂ : algo)(aulasinf₁ =obs aulasinf₂ ⇔ franjasHorarias(aulasinf₁) =obs franjasHorarias(aulasinf₂)∧
+                                                             materias(aulasinf₁) =obs materias(aulasinf₂)∧
+                                                             aulas(aulasinf₁) =obs aulas(aulasinf₂)∧L
+                                                             (∀a:aula)capacidad(a,aulasinf₁) =obs capacidad(a,aulasinf₂)∧
+                                                             reservas(a,aulasinf₁) =obs reservas(a,aulasinf₂))
+
+(d).
+generadores:
+  nuevoAulasInf: conj(materia) ms × conj(franja) fs × dicc(aula,nat) cap → aulasinf {(∀a1,a2:aula)(a1,a2 ∈ claves(cap) ⟹L ¬(obtener(a1,cap) =obs obtener(a2,cap))) ∧ ¬∅?(fs) ∧ ¬∅?(ms)}
+  //recibe  el conjunto de materias, el conjunto de franjas y un diccionario que mapea a cada aula una capacidad segun 
+  //lo determinado por la facultad en el cuatrimestre de la instancia a crear. Pido que no sean vacias materias y franjas
+  //porque si no no tendria sentido crear la instancia.
+
+  reservarAula: materia m × franja fr × nat c × aulasinf inf→ aulasinf {m ∈ materias(inf) ∧ fr ∈ franjasHorarias(inf)}
+  //Dada una materia m, una franja fr y una cantidad c de alumnos, la materia hace el pedido de reserva al sistema.
+  //No restrinjo sobre la cantidad, porque de eso se encarga el sistema luego. Puede pasar que tras usar este generador
+  //no se modifique la instancia de aulasinf en el caso de que la reserva no sea posible.
+
+(e).
+
+otras operaciones:
+  aulasLibres: franja f × aulasinf inf → conj(aula) {f∈(franjas(inf))}
+  rankingMaterias: aulasInf → secu(materia)
+  //uso secuencia porque necesito que tengan un orden para que justamente sea un ranking,
+  //y es la manera menos engorrosa de hacerlo. Se podria hacer un diccionario tambien, pero
+  //es complicarse la vida.
+
+ (f).
+  aulasLibres: aulasinf → conj(aula)
+
+  axiomas: ∀inf: aulasinf, ∀f:franja, ∀aulas:conj(aula)
+
+  aulasLibres(f,inf) ≡ aulasLibresAux(f,inf,aulas(inf))
+
+  aulasLibresAux(f,inf,aulas) ≡ if ∅?(aulas) then
+                                  ∅
+                                else
+                                  if f ∈ significados(reservas(dameUno(aulas),inf)) then
+                                    aulasLibresAux(f,inf,sinUno(aulas))
+                                  else
+                                    Ag(dameUno(aulas),aulasLibresAux(f,inf,sinUno(aulas))
+                                  fi
+                                fi
+
+Extiende TAD diccionario
+  significados: dicc(α,conj(α2)) → conj(α)
+  significadosAux: conj(α) cs × dicc(α,conj(α2)) d → conj(α) {cs =obs claves(d)}
+
+  significados(d) ≡ significadosAux(claves(d),d)
+                  significadosAux(cs,d) ≡ if ∅?(cs) then
+                    ∅
+                  else
+                    obtener(dameUno(cs),d) U significadosAux(sinUno(cs),d)
+                  fi
+
+fin TAD
