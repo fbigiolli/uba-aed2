@@ -1,0 +1,131 @@
+// Ejercicio 1.
+
+TAD gatito es STRING
+TAD persona es STRING
+TAD raza es STRING
+
+TAD CentroDeAdopcion
+
+    géneros: cda
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    igualdad observacional:
+      (∀cda₁, cda₂ : algo)(cda₁ =obs cda₂ ⇔ listaDeEspera(cda₁) =obs listaDeEspera(cda₂)∧
+                                             enAdopcion(cda₁) =obs enAdopcion(cda₂)∧
+                                             adoptantesActuales(cda₁) =obs adoptantesActuales(cda₂)∧
+                                             (∀p:persona)(#vecesQueAdopto(p,cda1)=obs #vecesQueAdopto(p,cda2))
+
+    observadores básicos:
+        listaDeEspera: cda → conj(persona)
+        enAdopcion: cda → dicc(gatito,raza)
+        adoptantesActuales: cda → dicc(persona,<gatito,raza>)
+        #vecesQueAdopto: persona × cda  → nat
+        //Para poder distinguir dos instancias del TAD, necesito conocer la lista de espera del centro,
+        //los gatitos que estan en adopcion (y su raza por requerimiento de los duenios), el conjunto de 
+        //adoptantes que actualmente poseen un gatito (y que gatito poseen en caso de que lo quieran devolver)
+        //y para cada persona tambien necesito poder conocer la cantidad de veces que hizo una adopcion. 
+        //No puedo ponerlo en otra operacion ya que esta informacion no se desprendia de los anteriores observadores.
+
+    generadores:
+        nuevoCda: → cda
+        adoptar: persona p × cda c → cda {p ∉ adoptantesActuales(c)}
+        rescateSemanal: cda → cda 
+        devolver: persona p × cda c → cda {p ∈ adoptantesActuales(c)}
+        //Necesito poder generar una nueva instancia del TAD, poder registrar el rescate semanal de gatitos,
+        //las adopciones y las devoluciones del centro. El enunciado no requiere nada mas que esto.
+
+        //En caso de que fuera importante que el rescate sea exclusivamente semanal, habria que tener un observador
+        //que se dedique a contar los dias/semanas para poder agregar una restriccion en rescateSemanal, algo asi como
+        //{pasoSemana?(fecha(ultimoRescate(cda)))}. Desde el lado del  refugio, no creo que sea algo que realmente requieran,
+        //si no que hacerlo de esta manera es una obstaculizacion en caso de una posible excepcion en la que en una semana tengan mas de
+        //un rescate.
+
+        //EL comp. automatico se veria reflejado en la axiomatizacion de adoptar. En caso de que no haya gatitos en adopcion,
+        //adoptar debe agregar a la persona a listaDeEspera. Caso contrario, se efectua la adopcion agregarndolo a adoptantesActuales
+        //y quitando el gatito del diccionario enAdopcion. 
+    otras operaciones:
+
+    axiomas:
+        ...
+
+Fin TAD
+
+
+// Ejercicio 2.
+
+TAD DiccionarioExtendido extiende Diccionario
+
+  otras operaciones:
+  unirMuchos: conj(dicc(c,d)) → dicc(c,d)
+  unirMuchosAux: conj(dicc(c,d)) × (dicc c,d) → dicc(c,d)
+  unirDos: dicc(c,d) × dicc(c,d) × conj(clave) → dicc(c,d)
+
+
+  axiomas:∀cidcc:conj(dicc), ∀dic,dic1,dic2:dicc, ∀claves:conj(clave)
+
+
+  unirMuchos(cdicc) ≡ unirMuchosAux(sinUno(cdicc),dameUno(cdicc))
+
+  unirMuchosAux(cdicc,dic) ≡ if ∅?(cdicc) then
+    dicc
+    //Si se vacia el conjunto, devuelvo el diccionario con los otros ya agregados.
+  else
+    unirMuchosAux(sinUno(cdicc),unirDos(dameUno(cdicc),dic,claves(dic)))
+    //Llamado recursivo sacando un diccionario del conjunto y definiendo sus claves en dic.
+  fi
+
+  unirDos(dic1,dic2,claves) ≡ if ∅?(claves) then
+  //Si me quede sin claves es porque ya agregue todo.
+    dic1
+    //Devuelvo los dos unidos
+  else
+    unirDos(definir(dameUno(claves),obtener(dameUno(claves),dic2),dic1),dic2,sinUno(claves))
+    //Defino una de las claves de dic2 en dic1, llamado recursivo a la funcion sacando esa clave del conj. claves.
+  fi
+
+  // Ejercicio 3. 
+
+  (a.) Falso. Tomemos f(n) = n^2 y g(n) = n^3. 
+  Tenemos que n^2 ∈ O(n^2), y que n^3 esta acotado por debajo por n (no se como poner el simbolo en st3 jej)
+  Pero sin embargo, n^3 ∉ O(n^2)
+
+  (b.)Verdadero. Por definicion, que una funcion pertenezca a θ(f(n)) significa que esta acotada tanto por arriba como 
+  por debajo por f(n) que es en esencia decir que son iguales. Entonces, si f(n) esta acotada por debajo por g(n), y a su vez
+  g(n) esta acotada por arriba por f(n), estamos en el caso de θ(n)
+
+
+// Ejercicio 4. 
+
+(a).
+Para que la estructura sea valida, el Invariante debe cumplir:
+1. Todas las claves de instrumentosPorGenero deben estar definidas en generos.
+2. Todos los generos deben estar definidos en las claves de instrumentosPorGenero
+3. Para cada banda, el genero debe pertenecer a el conj de generos.
+4. Para cada banda se debe cumplir que la cantidad de musicos sea la misma que la de sus instrumentosPorGenero 
+5. Luego de lo anterior, se debe cumplir que los instrumentos asociados se correspondan.
+
+(b).
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ (1) ∧ (2) ∧ (3) ∧ (4) ∧ (5)
+
+  (1) ≡ (∀g:genero)(g ∈ claves(e.instrumentosPorGenero) ⟹ g ∈ e.generos)
+  (2) ≡ (∀g:genero)(g ∈ e.generos ⟹ g ∈ claves(e.instrumentosPorGenero) )
+  (3) ≡ (∀b:banda)(def?(b,e.infoBanda) ⟹L π1(obtener(b,e.infoBanda)) ∈ e.generos)
+  (4) ≡ (∀b:banda)(def?(b,e.infoBanda) ⟹L #(π2(obtener(b,e.infoBanda))) = #instrumentosPorGenero(π1(obtener(b,e.infoBanda))))
+  (5) ≡ (∀b:banda)(def?(b,e.infoBanda) ⟹L (∀i:instrumento)(i ∈ obtener(π1(obtener(b,e.infoBanda)),e.instrumentosPorGenero)) ⟹ 
+                                            (∃m:musico)(m ∈ π2(obtener(b,e.infoBanda)) ∧L obtener(m,e.musicos) = i))
+
+(c).
+función de abstracción:
+  Abs: estr e → clasificador { Rep(e) }
+  (∀e: estr) Abs(e) =obs c | (6) ∧ (7) ∧ (8) ∧L (10) ∧L (9)
+
+  (6) ≡ (∀g:genero)((g ∈ e.genero ⟹ g ∈ generosMusicales(c)) ∧ (g ∈ generosMusicales(c) ⟹ g ∈ e.genero))
+  (7) ≡ (∀g:genero)(g ∈ claves(e.instrumentosPorGenero) ⟹ (∀i:instrumento)((i ∈ obtener(g,e.instrumentosPorGenero) ⟹ instrumentosDelGenero(c,g,i) = true)))
+  (8) ≡ (∀b:banda)((b ∈ bandas(c) ⟹ def?(e.infoBanda)))
+  (9) ≡ (∀b:banda)(b ∈ bandas(c) ⟹L (∀m:musico)(m ∈ π2(obtener(b,e.infoBanda)) ⟹ obtener(m,e.musicos) ∈ formacion(c,b))) 
+  (10) ≡ (∀b:banda)(b ∈ bandas(c) ⟹L integrantes(c,b) = π2(obtener(b,e.infoBanda)))
