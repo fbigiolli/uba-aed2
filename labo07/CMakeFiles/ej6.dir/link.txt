@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -std=gnu++11 -ggdb3 -g CMakeFiles/ej6.dir/tests/test_templates.cpp.o CMakeFiles/ej6.dir/tests/test_diccionario.cpp.o -o ej6  libgtest.a libgtest_main.a 

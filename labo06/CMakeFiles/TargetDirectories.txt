@@ -1,0 +1,12 @@
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/gtest.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/gtest_main.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej1.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej2.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej3.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej4.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej5.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej6.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej7.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/ej8.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/edit_cache.dir
+/home/felipe/Documentos/uba-aed2/labo06/CMakeFiles/rebuild_cache.dir
