@@ -20,6 +20,7 @@ TAD CentroDeAdopcion
 
     observadores básicos:
         listaDeEspera: cda → conj(persona)
+        devolvieron: cda → conj(persona)
         enAdopcion: cda → dicc(gatito,raza)
         adoptantesActuales: cda → dicc(persona,<gatito,raza>)
         #vecesQueAdopto: persona × cda  → nat
@@ -47,7 +48,9 @@ TAD CentroDeAdopcion
         //adoptar debe agregar a la persona a listaDeEspera. Caso contrario, se efectua la adopcion agregarndolo a adoptantesActuales
         //y quitando el gatito del diccionario enAdopcion. 
     otras operaciones:
-
+        maximoAdoptador: cda → persona
+        maximoAdoptadorAux: cda × conj(persona) → persona
+        //hago dos otras op porquue con una no voy a poder hacer recursion sobre el conjunto de los que devolvieron. 
     axiomas:
         ...
 
@@ -92,32 +95,39 @@ TAD DiccionarioExtendido extiende Diccionario
   Tenemos que n^2 ∈ O(n^2), y que n^3 esta acotado por debajo por n (no se como poner el simbolo en st3 jej)
   Pero sin embargo, n^3 ∉ O(n^2)
 
-  (b.)Verdadero. Por definicion, que una funcion pertenezca a θ(f(n)) significa que esta acotada tanto por arriba como 
-  por debajo por f(n) que es en esencia decir que son iguales. Entonces, si f(n) esta acotada por debajo por g(n), y a su vez
-  g(n) esta acotada por arriba por f(n), estamos en el caso de θ(n)
+  (b.)Falso. Tomando f(n) = n^6 y g(n) = n , se cumple que f(n) esta acotada por debajo por g(n), y a  su vez g(n) ∈ O(f(n)).
+  Sin embargo, claramente no pertenecen al mismo θ. Esto puede probarse, por ejemplo, tomando limite para comparar el crecimiento
+  de ambas funciones.
 
+  (c.)
 
 // Ejercicio 4. 
 
 (a).
 Para que la estructura sea valida, el Invariante debe cumplir:
 1. Todas las claves de instrumentosPorGenero deben estar definidas en generos.
-2. Todos los generos deben estar definidos en las claves de instrumentosPorGenero
-3. Para cada banda, el genero debe pertenecer a el conj de generos.
+2. Las claves de infoBanda deben ser las mismas que el conjunto bandas
+3. Para cada banda, el genero debe pertenecer al conj de generos.
 4. Para cada banda se debe cumplir que la cantidad de musicos sea la misma que la de sus instrumentosPorGenero 
 5. Luego de lo anterior, se debe cumplir que los instrumentos asociados se correspondan.
+11. Los distintos generos no pueden repetir instrumentos x enunciado
 
-(b).
+(b). el primer while es n-1 porque arranca en 1 
+     en el segundo while (que se encuentra adentro del primero) el mejor caso es en el que A[i] no se corresponde con i, por lo que count sera 0
+     y de esta forma no entramos al while.
+
+    
 invariante de representación:
   Rep: estr → bool
-  (∀e: estr) Rep(e) ≡ true ⇔ (1) ∧ (2) ∧ (3) ∧ (4) ∧ (5)
+  (∀e: estr) Rep(e) ≡ true ⇔ (1) ∧ (2) ∧ (3) ∧ (4) ∧ (5) ∧ (11)
 
   (1) ≡ (∀g:genero)(g ∈ claves(e.instrumentosPorGenero) ⟹ g ∈ e.generos)
-  (2) ≡ (∀g:genero)(g ∈ e.generos ⟹ g ∈ claves(e.instrumentosPorGenero) )
+  (2) ≡ e.bandas = claves(e.infoBanda)
   (3) ≡ (∀b:banda)(def?(b,e.infoBanda) ⟹L π1(obtener(b,e.infoBanda)) ∈ e.generos)
   (4) ≡ (∀b:banda)(def?(b,e.infoBanda) ⟹L #(π2(obtener(b,e.infoBanda))) = #instrumentosPorGenero(π1(obtener(b,e.infoBanda))))
   (5) ≡ (∀b:banda)(def?(b,e.infoBanda) ⟹L (∀i:instrumento)(i ∈ obtener(π1(obtener(b,e.infoBanda)),e.instrumentosPorGenero)) ⟹ 
                                             (∃m:musico)(m ∈ π2(obtener(b,e.infoBanda)) ∧L obtener(m,e.musicos) = i))
+  (11) ≡(∀g1,g2:genero)(g1 ∈ e.generos ∧ g2 ∈ e.generos ⟹L obtener(e.instrumentosPorGenero,g1) ≠ obtener(e.instrumentosPorGenero,g2))
 
 (c).
 función de abstracción:

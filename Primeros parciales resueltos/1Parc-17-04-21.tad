@@ -1,0 +1,73 @@
+// Ejercicio 1.
+axiomas:
+prim(e∙s) ≡ if ¬(vacia?(s)) ∧L π1(e) =obs π1(prim(s)) then
+                <π1(e),π2(e)+π2(prim(s))>
+              else
+                e
+              fi
+
+fin(e∙s) ≡ if ¬(vacia?(s)) ∧L π1(e) =obs π1(prim(s)) then
+             fin(s)
+           else
+             s
+           fi
+
+//los observadores prim y fin serian los del TAD secuencia original
+comprimir(sn) ≡ if vacia?(sn) then
+                  <>
+                else
+                  <prim(sn),1> ∙ comprimir(fin(sn))
+                fi
+// la idea es aprovechar la igualdad obs para armar una secuencia en la que solamente
+// se pongan los elementos uno atras de otro con 1 aparicion cada uno, ya que 
+//al pasar por los observadores la obtenemos comprimida.
+
+maxApsContiguas(s) ≡ maxApsContiguasAux(fin(s),prim(s))
+
+maxApsContiguasAux(s,elem) ≡ if vacia?(s) then
+                              elem
+                            else
+                              if π2(prim(s)) > π2(elem) then
+                                maxApsContiguasAux(fin(s),prim(s))
+                              else
+                                maxApsContiguasAux(fin(s),elem)
+                              fi
+                            fi
+
+longComprimida(s) ≡ if vacia?(s) then
+                      0
+                    else
+                      1 + longComprimida(fin(s))
+                    fi
+
+// Ejercicio 2.
+
+TAD CDV
+
+    géneros: cdv
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    observadores básicos:
+        ciudades: cdv → conj(ciudad)
+        residentes: ciudad c × cdv cdv→ conj(persona) {c ∈ ciudades(cdv)}
+        vacunados: cdv cdv → conj(persona)
+        inscriptos: ciudad c × cdv cdv → conj(persona) {c ∈ ciudades(cdv)}
+        frascos: cdv → dicc(ciudad,nat)
+
+    generadores:
+      //Tomando ciudades y residentes como datos fijos
+        nuevoCDV: conj(ciudad) × conj(persona) → cdv
+        //Asumiendo que cada planilla que llega esta organizada por ciudad
+        inscribir: conj(persona) ps × ciudad c × cdv cdv  → cdv {c ∈ ciudades(cdv) ∧L (∀p:persona)(p ∈ ps ⟹ p ∈ residentes(c,cdv) ∧ p ∉ vacunados(cdv))}
+        recibirFrascos: nat cant × ciudad c × cdv cdv → cdv {c ∈ ciudades(cdv) ∧ cant > 0}
+        
+    otras operaciones:
+        otraCosa: algo × nat → nat
+
+    axiomas:
+        ...
+
+Fin TAD
