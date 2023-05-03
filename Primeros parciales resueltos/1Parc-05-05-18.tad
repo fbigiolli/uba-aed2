@@ -1,0 +1,51 @@
+// Ejercicio 1. 
+Hecho en p1.
+
+// Ejercicio 3.
+
+(a).
+1. Todo tecnico estara definido en ubicacion sisolosi para la direccion que se le asocia el tecnico pertenece
+al conjunto de tecnicos asociado a esa direccion en quienes estan en.
+
+2. Claves de ubicacion deben estar contenidas en tecnicos
+
+3. Claves de visitas deben estar contenidas en tecnicos
+
+4. Que una direccion sea el significado de algun tecnico en ubicacion implicara
+que esa direccion pertenezca al conjunto de clientes.
+
+5. Que la diferencia entre tecnicos y claves de ubicacion no sea vacia implica que no haya pendientes.
+
+6. Toda direccion que esta en visitas debe estar en clientes. 
+
+7. Toda direccion que este en clientes debe tener alguna visita.
+
+8. Que una direccion este en pendientes implica que no haya ningun tecnico en esa ubicacion.
+
+9. Que un tecnico este en una ubicacion implica que esa ubicacion este en visitas del tecnico.
+
+(b). 
+invariante de representación:
+    Rep: estr → bool
+    (∀e: estr) Rep(e) ≡ true ⇔ (1) ∧L (2) ∧ (3) ∧ (4) ∧ (5) ∧ (6) ∧ (7) ∧ (8) ∧ (9)
+
+(1) ≡ (∀t:tecnico)(def?(t,e.ubicacion) <==> def?(t,e.ubicacion) ∧L def?(obtener(t,e.ubicacion),quienesEstanEn?) ∧L t ∈ obtener(obtener(t,e.ubicacion),e.QuienesEstanEn)))
+(2) ≡ claves(e.ubicacion) ⊆ e.tecnicos
+(3) ≡ claves(e.visitas) ⊆ e.tecnicos
+(4) ≡ (∀t:tecnico)(def?(t,e.ubicacion) ⟹L obtener(t,e.ubicacion) ∈ e.clientes)
+(5) ≡ ¬∅?(e.tecnicos - claves(e.ubicacion)) ⟹ vacia?(e.pendientes)
+(6) ≡ (∀t:tecnico)(def?(t,e.visitas) ⟹L (∀d:direccion)(d ∈ obtener(t,e.visitas) ⟹L d ∈ e.clientes))
+(7) ≡ (∀d:direccion)(d ∈ e.clientes ⟹ (∃t:tecnico)(def?(t,e.visitas) ∧L d ∈ obtener(t,e.visitas)))
+(8) ≡ (∀d:direccion)(esta?(d,e.pendientes) ⟹ ¬(∃t:tecnico)(def?(t,e.ubicacion) ∧L obtener(t,e.ubicacion) = d))
+(9) ≡ (∀t:tecnico)(def?(t,e.ubicacion) ⟹L obtener(t,e.ubicacion) ∈ obtener(t,e.visitas))
+
+(c).
+función de abstracción:
+    Abs: estr e → TaD { Rep(e) }
+    (∀e: estr) Abs(e) =obs TaD | libres(TaD) = e.tecnicos - claves(e.ubicacion) ∧
+                                  ocupados(TaD) = claves(e.ubicacion) ∧
+                                  (∀t:tecnico)(t ∈ ocupados(TaD) ⟹L ubicacion(t,TaD) = obtener(t,e.ubicacion) ∧
+                                  pendientes(TaD) = e.pendientes ∧
+                                  (∀t:tecnico)(t ∈ e.tecnicos ⟹L (∀d:direccion)(visitas(TaD,t,d) = #(d,obtener(t,e.visitas)))
+
+
