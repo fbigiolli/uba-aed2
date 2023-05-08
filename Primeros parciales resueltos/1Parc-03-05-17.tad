@@ -1,0 +1,95 @@
+TAD cgt
+
+    géneros: cgt
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    observadores básicos:
+        //Aclaracion: considero que esta siendo atendido el primero en la fila de cada ventanilla
+        ventanillas: cgt → conj(ventanilla)
+        filaVentanilla: cgt c × ventanilla v → cola(persona)        {v ∈ ventanillas(c)}
+        tramitesPendientes: persona p × cgt c → secu(ventanilla)    {p ∈ personas(c)}
+        #atendidos: ventanilla v × cgt c → nat                      {v ∈ ventanillas(c)}
+
+    generadores:
+        abrirCGT: conj(ventanilla) → cgt
+        llegaPersona: cgt × secu(ventanilla) vs × persona p → cgt {sinRepetidos(vs) ∧ p ∉ personas(c) ∧ ¬ vacia?(vs) ∧ (∀v:ventanilla)(esta?(v,vs) ⟹ v ∈ ventanillas(c))}
+        atender: cgt c × ventanilla v → cgt                       {¬vacia?(filaVentanilla(c,v)) ∧ v ∈ ventanillas(c)}
+
+    otras operaciones:
+        masAtendidos: cgt → ventanilla
+        atendioMasQueLasOtras?: conj(ventanilla) vs × cgt × ventanilla v1 → ventanilla {(∀v:ventanilla)(v ∈ vs ⟹ v ∈ ventanillas(c)) ∧ v1 ∈ ventanillas(c)}
+        personas:cgt c → conj(persona)
+        personasPorVentanilla: cola c col × cgt c → conj(persona)                      {(∃v:ventanillas)(c ∈ ventanillas(c) ∧L filaVentanilla(c,v) =obs col)}
+        personasTodasVentanillas: conj(ventanilla) vs × c → conj(persona)              {vs =obs ventanillas(c)}
+
+    axiomas:
+        ventanillas(abrirCGT(vs)) ≡ vs
+        ventanillas(llegaPersona(c,rec,p)) ≡ ventanillas(c)
+        ventanillas(atender(c,v)) ≡ ventanillas(c)
+
+        filaVentanilla(abrirCGT(c),v) ≡ ∅
+        filaVentanilla(llegaPersona(c,rec,p),v) ≡ if prim(rec) =obs v then
+                                                    encolar(e,filaVentanilla(c,v))
+                                                else
+                                                    filaVentanilla(c,v)
+                                                fi
+
+        filaVentanilla(atender(c,v1),v2) ≡ if v1 =obs v2 then
+                                                desencolar(filaVentanilla(c,v2))
+                                            else
+                                                if ¬vacia?(fin(proximo(v1))) ∧L prim(fin(tramitesPendientes(proximo(v1),c))) =obs v2 then
+                                                    encolar(proximo(v1),filaVentanilla(v2))
+                                                else
+                                                    filaVentanilla(c,v2)
+                                                fi
+                                            fi
+
+        tramitesPendientes(p1,llegaPersona(c,rec,p2)) ≡ if p1=obsp2 then
+                                                            rec
+                                                        else
+                                                            tramitesPendientes(p1,c)
+                                                        fi
+
+        tramitesPendientes(p,atender(c,v)) ≡ if proximo(filaVentanilla(c,v)) = obs p then
+                                                fin(tramitesPendientes(p,c))
+                                            else
+                                                tramitesPendientes(p,c)
+                                            fi
+
+        #atendidos(v,abrirCGT(vs)) ≡ 0
+        #atendidos(v,llegaPersona(c,rec,p)) ≡ #atendidos(v,c)
+        #atendidos(v1,atender(c,v2)) ≡ if v1=obsv2 then
+                                            #atendidos(v1) + 1
+                                        else
+                                            #atendidos(v1)
+                                        fi 
+
+        masAtendidos(c) ≡ atendioMasQueLasOtras?(sinUno(ventanillas(c)),c,dameUno(ventanillas(c)))
+        atendioMasQueLasOtras?(vs,c,v) ≡ if ∅?(vs) then
+                                        v
+                                    else
+                                        if #atendidos(dameUno(vs)) > #atendidos(v) then
+                                            atendioMasQueLasOtras?(sinUno(vs),c,dameUno(vs))
+                                        else
+                                            atendioMasQueLasOtras?(sinUno(vs),c,v)
+                                        fi
+                                    fi 
+
+
+        personas(c) ≡ personasTodasVentanillas(ventanillas(c),c)
+        personasTodasVentanillas(vs,c) ≡ if vacia?(vs) then
+                                            ∅
+                                        else
+                                            personasPorVentanilla(fila(dameUno(vs)),c) U personasTodasVentanillas(sinUno(vs),c))
+                                        fi
+        personasPorVentanilla(col,c) ≡ if vacia?(col) then
+                                            ∅
+                                        else
+                                            Ag(proximo(col),personasPorVentanilla(desencolar(col),c))
+                                        fi
+
+
+Fin TAD

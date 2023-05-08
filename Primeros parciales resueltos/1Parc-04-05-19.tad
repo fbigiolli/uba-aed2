@@ -1,0 +1,116 @@
+TAD persona es Nat
+TAD dia es Nat
+TAD ticket es tupla<nat,nat>
+
+TAD ojala
+
+    géneros: lot
+
+    exporta: algo, observadores básicos, generadores
+
+    usa: bool, nat
+
+    observadores básicos:
+        ticketsHoy: persona p × lot l → multiconj(ticket) {p ∈ compradores(l)}
+        compradores: lot → conj(persona)
+        ticketsUlt100D: persona p × lot → secu<multiconj(ticket)> {p ∈ compradores(l)}
+        tabla: loteria → dicc(nat,nat)
+        balance: lot → int
+
+    generadores:
+        nuevaLot: dicc(nat,nat) → lot
+        comprarTicket: lot l × persona p × nat monto × nat comb → lot {0 ≤ comb ≤ 999999 ∧ monto ∈ claves(tabla(lot)) ∧ ¬ludopata?(l,p)}
+        pasarDia: lot l → lot
+
+    otras operaciones:
+        diaActual: lot  → dia
+        ludopata?: persona p × lot l → bool {p ∈ compradores(l)}
+
+    axiomas:
+        ticketsHoy(p2,comprarTicket(l,p1,m,c)) ≡ if p1 =obs p2 then
+                                                      Ag(ticketsHoy(d,p))
+                                                    else
+                                                      ticketsHoy(p2,l)
+                                                    fi
+
+        ticketsHoy(p,pasarDia(l)) ≡ ∅
+
+        compradores(nuevaLot(tabla)) ≡ ∅
+        compradores(comprarTicket(l,p,m,c)) ≡ if p ∈ compradores(l) then
+                                                compradores(l)
+                                              else
+                                                ag(p,compradores(l))
+                                              fi
+
+        compradores(pasarDia(l)) ≡ compradores(l)
+
+        ticketsUlt100D(p2,comprarTicket(l,p1,m,c)) ≡ ticketsUlt100D(p2,l)
+        ticketsUlt100D(p,pasarDia(l)) ≡ if long(ticketsUlt100D(p,l)) = 100 then
+                                          ticketsHoy(p,l) ∙ fin(ticketsUlt100D(p,l))
+                                        else
+                                          ticketsHoy(p,l) ∙ ticketsUlt100D(p,l)
+                                        fi
+
+        tabla(nuevaLot(tabla)) ≡ tabla
+        tabla(comprarTicket(l,p1,m,c)) ≡ tabla(l)
+        tabla(pasarDia(l)) ≡ tabla(l)
+
+        balance(nuevaLot(tabla)) ≡ 0
+        balance(comprarTicket(l,p1,m,c)) ≡ balance(l) + m
+        balance(pasarDia(l)) ≡ balance(l) - premiosHoy
+
+        premiosHoy
+Fin TAD
+
+
+
+
+
+// Ejercicio 3.
+
+1. Toda unidad que tenga duenia debera estar definida en el diccionario duenia
+2. Toda unidad que no tenga duenia debera pertenecer al conjunto de huerfanas
+3. Toda unidad que este huerfana no debe tener ninguna antena a su alcance.
+4. Una unidad estara definida en e.duenia sisolosi su significado pertenece a claves de e.unidadesAdistancia
+5. Toda unidad que este definida en distDuenia debe tener duenia
+6. El nro. de clientes de una antena es la #unidades de a que es duenia esa antena.
+7. Una antena es duenia de una unidad sisolosi esta a alguna distancia de la antena y es la minima respecto a las otras antenas. (o si hay dos, su identificador es mayor)
+
+invariante de representación:
+  Rep: estr → bool
+  (∀e: estr) Rep(e) ≡ true ⇔ (1) ∧ (2) ∧ (3) ∧ (4) ∧ (5) ∧L (6) ∧ (7)
+
+  (1) ≡ (∀u:unidad)(def?(u,e.tieneDuenia?) ⟹L obtener(u,e.tieneDuenia?) = true <==> def?(u,e.duenia))
+  (2) ≡ (∀u:unidad)(def?(u,e.tieneDuenia?) ⟹L obtener(u,e.tieneDuenia?) = false <==> u ∈ e.huerfanas)
+  (3) ≡ (∀u:unidad)(u ∈ e.huerfanas <==> ¬(∃a:antena)(def?(a,e.unidadesADistancia) ∧L (∀n:nat)(def?(n,obtener(a,e.unidadesAdistancia)) ⟹L ¬(u ∈ obtener(n,obtener(a,e.unidadesAdistancia))))))
+  (4) ≡ (∀u:unidad)(def?(u,e.duenia) <==> def?(u,e.duenia) ∧L obtener(u,e.duenia) ∈ claves(e.unidadesAdistancia))
+  (5) ≡ (∀u:unidad)(def?(u,e.distDuenia) <==> def?(u,e.tieneDuenia) ∧L obtener(u,e.tieneDuenia) = true)
+  (6) ≡ (∀a:antena)(def?(a,e.nroClientes) ⟹L obtener(a,e.nroClientes) = #unidadesAntena(a,e.duenia,claves(e.duenia)))
+  (7) ≡ (∀u:unidad)(def?(u,e.duenia) <==> def?(u,e.duenia) ∧L def?(obtener(u,e.duenia),e.unidadesAdistancia) 
+                                               ∧L ¬(∃a2:antena)(a ≠ a2 ∧ def?(a2,e.unidadesADistancia) ∧L 
+                                               (∃n:nat)(n < distDuenia(u,a) ∧ def?(n,obtener(a2,e.unidadesADistancia)) ∧L u ∈ obtener(n,obtener(a2,e.unidadesADistancia)))))
+
+  #unidadesAntena(a,d,us) ≡ if ∅?(us) then
+                              0
+                            else
+                              if a=obs obtener(d,dameUno(us)) then
+                                1 + #unidadesAntena(a,d,sinUno(us))
+                              else
+                                #unidadesAntena(a,d,sinUno(us))
+                              fi
+                            fi
+
+función de abstracción:
+  Abs: estr e → RED { Rep(e) }
+  (∀e: estr) Abs(e) =obs r | (8) ∧ (9) ∧ (10) ∧ (11)
+
+  (8) ≡ antenas(r) ≡ claves(e.unidadesAdistancia)
+  (9) ≡ unidades(r) ≡ claves(e.tieneDuenia?)
+  (10) ≡ (∀a:antena)(∀u:unidad)(alcanza?(r,a,u) = true <=> (∃n:nat)(def?(n,obtener(a,e.unidadesAdistancia)) ∧L u ∈ obtener(n,obtener(a,e.unidadesAdistancia))))
+  (11) ≡ (∀a:antena)(∀u:unidad)(distancia(r,a,u) = obtenerDistancia(0,obtener(a,e.unidadesAdistancia)))
+
+  obtenerDistancia(n,us) ≡ if u ∈ obtener(n,us) then
+                      n
+                    else
+                      obtenerDistancia(n+1,us)
+                    fi
