@@ -48,6 +48,7 @@ class Conjunto
 
         unsigned int _cardinal = 0;
 
+
         struct Nodo
         {
             // El constructor, toma el elemento al que representa el nodo.
@@ -62,6 +63,9 @@ class Conjunto
 
         // Puntero a la raíz de nuestro árbol.
         Nodo* _raiz;
+
+        void destruirNodos(Nodo* n);
+        unsigned int cardinalAux(Nodo* n) const;
 
 };
 
