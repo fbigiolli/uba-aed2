@@ -1,0 +1,55 @@
+Interfaz
+
+  // La principal diferencia con el ejercicio anterior es que aunque la mayoria de los elementos van a estar entre las cotas,
+  // ahora podemos tener elementos fuera del rango. Por lo tanto, la implementacion anterior con un array donde pongo 1 y 0 no es posible,
+  // asi como tampoco es posible representar mediante un array porque necesitariamos inicializar un array infinitamente grande para poder seguir agregando elementos
+  // (o agregar arrays nuevos a la estructura cada vez que los llenemos, lo cual no es muy util)
+  // Por lo tanto, es mejor representar el conjunto mediante otra estructura, por ejemplo un ABB, AVL, Secuencia, etc.
+
+    estr = tupla<vector,lower,upper>
+
+    se explica con: conjajust(nat)
+
+    géneros: caj(nat)
+
+    operaciones:
+        vacio(in lower: nat, in upper: nat ) → res: conjr(nat)
+        Pre ≡ { true }
+        Post ≡ { res =obs ∅(lower,upper) } // Aca no se si asumir que al llamar la funcion del tad se asignarian lower y upper a mi estructura o deberia hacerlo manualmente
+        Descripción: genera un conjunto vacio con el rango provisto por los dos nat
+        Complejidad: Θ(1)
+        Aliasing: No hay
+
+        Ag(in n:nat, in/out c:conjr(nat)) 
+        Pre ≡ { c =obs c0 }
+        Post ≡ { c =obs Ag(n,c0) }
+        Descripción: agrega el elemento al conjunto
+        Complejidad: Θ(1) // Vendria a ser equivalente a hacer v.push_back
+        Aliasing: no hay
+
+        pertenece(in c:conjr(nat), in n:nat) → res:bool
+        Pre ≡ { true }
+        Post ≡ { res =obs n ∈ c }
+        Descripción: devuelve true sii el elemento pertenece al conjr
+        Complejidad: Θ(n) // Es una busqueda en un vector
+        Aliasing: no hay
+
+        lower(in c:conjr(nat)) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs lower(c) }
+        Descripción: Devuelve la cota inferior del conjr
+        Complejidad: Θ(1) // Es acceder a la tupla de estr
+        Aliasing: no hay
+
+        upper(in c:conjr(nat)) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs upper(c) }
+        Descripción: Devuelve la cota superior del conjr
+        Complejidad: Θ(1)
+        Aliasing: no hay
+
+    algoritmos:
+        iFunción(in arg1: α, in/out arg2: algo(α)) → res: bool
+            ...
+
+Fin Interfaz

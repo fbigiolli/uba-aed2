@@ -1,0 +1,52 @@
+Interfaz
+
+    se explica con: conjenrango(nat)
+
+    estr = tupla<array,lower,upper>
+    // Nota: en la estructura el array sera el conjunto en si, lower y upper determinaran el rango.
+    // Se podria optar por hacer un array largo rango+2 en el que los dos primeros elementos sean las cotas.
+
+
+    géneros: conjr(nat)
+
+    operaciones:
+        vacio(in lower: nat, in upper: nat ) → res: conjr(nat)
+        Pre ≡ { true }
+        Post ≡ { res =obs ∅(lower,upper) } // Aca no se si asumir que al llamar la funcion del tad se asignarian lower y upper a mi estructura o deberia hacerlo manualmente
+        Descripción: genera un conjunto vacio con el rango provisto por los dos nat
+        Complejidad: Θ(1)
+        Aliasing: No hay
+
+        Ag(in n:nat, in/out c:conjr(nat)) 
+        Pre ≡ { c =obs c0 ∧ e.lower ≤ n ≤ e.upper  }
+        Post ≡ { c =obs Ag(n,c0) }
+        Descripción: agrega el elemento al conjunto
+        Complejidad: Θ(1) // Vendria a ser equivalente a hacer la asignacion array[n] = 1 (porque al tener el conj en un rango, cada elemnto del array representa con un 1 o un 0 si el elemento esta o no)
+        Aliasing: no hay
+
+        pertenece(in c:conjr(nat), in n:nat) → res:bool
+        Pre ≡ { true }
+        Post ≡ { res =obs n ∈ c }
+        Descripción: devuelve true sii el elemento pertenece al conjr
+        Complejidad: Θ(1) // Es un acceso a la posicion i del array
+        Aliasing: no hay
+
+        lower(in c:conjr(nat)) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs lower(c) }
+        Descripción: Devuelve la cota inferior del conjr
+        Complejidad: Θ(1) // Es acceder a la tupla de estr
+        Aliasing: no hay
+
+        upper(in c:conjr(nat)) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs upper(c) }
+        Descripción: Devuelve la cota superior del conjr
+        Complejidad: Θ(1)
+        Aliasing: no hay
+
+    algoritmos:
+        iFunción(in arg1: α, in/out arg2: algo(α)) → res: bool
+            ...
+
+Fin Interfaz

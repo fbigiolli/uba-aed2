@@ -1,0 +1,145 @@
+estr es tupla: < filas: nat, columnas: nat, 
+                 noNulas: linkedList(<fila,col,valor>)>
+
+Interfaz
+
+    parámetros formales:
+        géneros: α
+        funciones:
+            copiar(in x: α) → res: bool
+            Pre ≡ { true }
+            Post ≡ { res =obs x }
+            Descripción: Devuelve una copia de x
+            Complejidad: Θ(noNulas(x))
+            Aliasing: No presenta aspectos de aliasing
+
+    se explica con: mat(nat)
+
+    géneros: 
+
+    operaciones:
+        Crear(in filas: nat, in col: nat) → res: mat
+        Pre ≡ { true }
+        Post ≡ { res =obs crear(f,c) }
+        Descripción: Crea una matriz vacia de x,y filas,col
+        Complejidad: Θ(1)
+        Aliasing: No hay
+
+        Definir(in fila:nat, in col:nat, in v:nat, in m:mat) → res:bool
+        Pre ≡ { true }
+        Post ≡ { (res = true sii 0 ≤ fila ≤ e.filas ∧ 0 ≤ col ≤ e.columnas)
+                 ∧L definir(f,c,v,m) }
+        Descripción: Define un elemento en la matriz si la posicion se encuentra en rango
+        Complejidad: Θ(1)
+        Aliasing: no hay
+
+        #Filas(in m:mat) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs filas(m) }
+        Descripción: Devuelve el nro de filas.
+        Complejidad: Θ(1)
+        Aliasing: Se pasa por copia e.filas
+
+        #Columnas(in m:mat) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs columnas(m) }
+        Descripción: Devuelve el nro de columnas.
+        Complejidad: Θ(1)
+        Aliasing: Se pasa por copia e.columnas
+
+        obtener(in fila:nat, in col:nat, in m:mat) → res:nat
+        Pre ≡ { 0 ≤ fila ≤ e.filas ∧ 0 ≤ col ≤ e.columnas }
+        Post ≡ { res =obs obtener(f,c,m) }
+        Descripción: Devuelve el valor de la posicion solicitada
+        Complejidad: Θ(n) // Donde n es el numero de celdas definidas
+        Aliasing: Se devuelve una copia (aunque podria devolverse la referencia si fuera conveniente)
+
+        sumarMatrices(in m:mat, in n:mat) → res:mat 
+        Pre ≡ { filas(n) =obs filas(m) ∧ columnas(n) =obs columnas(m) }
+        Post ≡ { res =obs sumarMatrices(n,m) }
+        Descripción: Devuelve una nueva matriz del mismo tamaño con los valores no nulos sumados
+        Complejidad: Θ(n+m) // Donde n y m son el numero de celdas definidas de cada matriz
+        Aliasing: no hay (la matriz que se devuelve no hace referencia a las algunas)
+
+    algoritmos:
+        iCrear(in filas: nat, in col: nat) → res: mat
+            int filas = filas;
+            int col = col;
+            noNulas = vacia();
+            return <filas,col,noNulas>;
+
+        iDefinir(in fila:nat, in col:nat, in v:nat, in m:mat) → res: bool
+            if( fila > e.filas ∨ fila < 0, lo mismo para columnas){
+            return false;
+            }
+
+            else{
+
+            elementoLista = noNulas.primero;
+            while(elementoLista.siguiente != null){
+
+              if(elementoLista.pos == <fila,col>){
+              elementoLista.valor = v;
+              return true;
+              }
+
+            else{
+            elementoLista = elementoLista.siguiente}
+
+            }
+
+             elementoLista.siguiente = elementoAAgregar;
+             return true;
+            }
+
+        iObtener(in fila:nat, in col:nat, in m:mat) → res:nat
+
+            elementoLista = noNulas.primero;
+            while(elementoLista.siguiente != null){
+
+              if(elementoLista.pos == <fila,col>){
+              return elementoLista.valor;
+              }
+
+            else{
+            elementoLista = elementoLista.siguiente}
+
+            }
+
+            return 0;
+
+        // Asumiendo que no nulas de ambas esta ordenado (habria que modificar el de definir)
+        iSumarMatrices(in m:mat, in n:mat) → res:mat
+        mat nueva = vacia;
+
+        // copio mat m en la nueva
+        elementoLista = m.noNulas.primero;
+        while(elementoLista != NULL){
+          agregar(nueva.noNulas,elementoLista);
+          elementoLista = elementoLista.siguiente;
+        }
+
+        // hago la suma
+
+        elementoLista = n.noNulas.primero;
+        elementoNueva = nueva.noNulas.primero;
+
+        while(elementoLista != NULL ∨ elementoNueva != NULL){
+          // Si el elemento de la nueva es menor al primero de n aumento su iterador
+          if (elementoNueva.pos < elementoLista.pos) elementoNueva = elementoNueva.siguiente;
+          // Si son iguales hago la suma y aumento ambos iteradores
+          if (elementoNueva.pos == elementoLista.pos){
+             elementoNueva.valor += elementoLista.valor;
+             elementoNueva = elementoNueva.siguiente;
+             elementoLista = elementoLista.siguiente;
+             }
+          // Si el elemento de la nueva es mayor al primero de n aumento el iterador de la de n y lo agrego
+          if (elementoNueva.pos > elementoLista.pos) 
+          {elementoLista = elementoLista.siguiente;
+           agregar(nueva,elementoLista);
+          }
+        }
+
+        return nueva;
+
+Fin Interfaz

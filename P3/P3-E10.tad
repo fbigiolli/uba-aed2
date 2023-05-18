@@ -1,0 +1,107 @@
+Interfaz
+
+    se explica con: Cola(nat)
+
+    géneros: cola(nat)
+
+    operaciones:
+        vacia() → res: cola(nat)
+        Pre ≡ { true }
+        Post ≡ { res =obs vacia }
+        Descripción: Genera una cola vacia.
+        Complejidad: Θ(1)
+        Aliasing: No hay
+
+        encolar(in/out c:cola(nat), in a:nat)
+        Pre ≡ { c =obs c0 }
+        Post ≡ { c =obs encolar(c0,a) }
+        Descripción: el elemento a es encolado
+        Complejidad: θ(1) // (como usamos una secuencia vendria a ser la complejidad de v.push_back)
+        Aliasing: No hay
+
+        esVacia?(in c:cola(nat)) → res:bool
+        Pre ≡ { true }
+        Post ≡ { res =obs vacia?(c) }
+        Descripción: devuelve true si la cola es vacia.
+        Complejidad: Θ(1)
+        Aliasing: No hay
+
+        proximo(in c:cola(nat)) → res:nat
+        Pre ≡ { ¬vacia?(c) }
+        Post ≡ { res =obs proximo(c) }
+        Descripción: devuelve el proximo elemento de la cola
+        Complejidad: Θ(1) // Es equivalente a acceder a una posicion del vector
+        Aliasing: No hay
+
+        desencolar(in/out c:cola(nat))
+        Pre ≡ { c =obs c0 ∧ ¬vacia?(c)}
+        Post ≡ { c=obs desencolar(c0) }
+        Complejidad: Θ(long(s)) // Es equivalente a la operacion eliminar del modulo vector (creo?)
+        Descripción: desencola la cola
+        Aliasing: No hay 
+
+        size(in c:cola(nat)) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs tamanio(c) }
+        Descripción: Devuelve el tamanio de la cola
+        Complejidad: Θ(1)
+
+    algoritmos:
+        iFunción(in arg1: α, in/out arg2: algo(α)) → res: bool
+            ...
+
+Fin Interfaz
+
+Interfaz
+
+    se explica con: Pila(nat)
+
+    géneros: pila(nat)
+
+    operaciones:
+        vacia() → res: pila(nat)
+        Pre ≡ { true }
+        Post ≡ { res =obs vacia }
+        Descripción: genera una pila vacia
+        Complejidad: Θ(1)
+        Aliasing: No hay
+
+        apilar(in/out c:pila(nat), a:nat)
+        Pre ≡ { p = p0 }
+        Post ≡ { p =obs apilar(a,p0) }
+        Descripción: apila un elemento en la pila
+        Complejidad: Θ(f (long(p)) + long(p) + copy(a)) // Copie y pegue la complejidad de agregar en la posicion 0 del vector el elemento. No se si esta bien.
+        Aliasing: a se apila por copia.
+
+        esVacia?(in p:pila(nat)) → res:bool
+        Pre ≡ { true }
+        Post ≡ { res =obs vacia?(p) }
+        Descripción: devuelve true si es vacia
+        Complejidad: θ(1)
+        Aliasing: no hay
+
+        tope(in p:pila(nat)) → res:nat
+        Pre ≡ { ¬vacia?(p) }
+        Post ≡ { res =obs tope(p) }
+        Descripción: devuelve el tope de la pila
+        Complejidad: Θ(1)
+        Aliasing: no hay
+
+        desapilar(in/out p:pila(nat)) → res: nat
+        Pre ≡ { p =obs p0 ∧ ¬vacia?(p) }
+        Post ≡ { p =obs desapilar(p0) ∧ res =obs tope(p) }
+        Complejidad: Θ(1)
+        Descripción: desapila el tope de p
+
+        size(in p:pila(nat)) → res:nat
+        Pre ≡ { true }
+        Post ≡ { res =obs tamanio(p) }
+        Complejidad: Θ(1)
+        Descripción: devuelve el tamanio de p
+        Aliasing: no hay
+
+    algoritmos:
+        iFunción(in arg1: α, in/out arg2: algo(α)) → res: bool
+            ...
+
+Fin Interfaz

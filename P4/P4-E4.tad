@@ -1,0 +1,67 @@
+estr es tupla< true: diccHash(<fila,col>,valor) , false: diccHash(<fila,col>,valor) >
+
+// Elijo esta estructura porque la operacion ver sera O(1) + O(1), crear es simplemente inicializar ambos diccionarios vacios
+// y complementar es invertir los diccionarios, donde habia true ahora hay false y viceversa. (Es decir, intercambiarlos entre si.)
+
+algoritmos:
+  iCrear() → res: matriz
+    res ← <nuevoDicc(),nuevoDicc()>
+
+////////////////////////////////////////////////////////////////////////////////////
+ 
+  iAsignar(in m:matriz, in pos:tupla<nat,nat> , in v:bool) → res: bool
+    // Primero calculo el valor de la funcion de hash para saber la pos en el array
+    valorHash ← hashFunction(pos)
+
+    // Si el valor a asignar es true, entonces lo agrego en e.true y borro esa posicion de e.false
+    if v == true then
+      agregarATablaHash(v,m.true,valorHash)
+      borrarDeTablaHash(v,m.false,valorHash)
+
+    // Lo mismo pero al reves
+    else 
+      agregarATablaHash(v,m.false,valorHash)
+      borrarDeTablaHash(v,m.true,valorHash)
+
+    end if
+
+Todas estas operaciones se hacen en O(1) por ser una tabla hash.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+  iVer(in m:matriz, in pos:tupla<nat,nat>) → res:bool
+    valorHash ← hashFunction(pos)
+    res ← false
+
+    // Me fijo si la posicion esta definida en la tabla de los verdaderos.
+    if m.true[valorHash] != false then
+       res ← true
+
+////////////////////////////////////////////////////////////////////////////////////
+
+  iComplementar(in/out m:matriz)
+    temp ← m.true
+    m.true ← m.false
+    m.false ← m.true
+
+  // La idea aca es cambiar las referencias entre los diccionarios, no sobreescribirlos.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+  iIntersecar(in A:mat, in B:mat) → res:mat
+    // Interpretando la conjuncion como hacer la operacion and en cada coordenada, solo va a quedar true en los lugares
+    // en que ambas matrices tengan true.
+
+    // Defino la matriz res como una nueva matriz con todos false.
+     res ← iCrear()
+
+     pos ← <0,0>
+
+     while pos != finalMatriz(A) do
+      //Aunque no terminaria nunca porque la matriz es infinita je
+      valorHash ← hashFunction(pos)
+      if A.true[valorHash] == true ∧ B.true[valorHash] == true then
+        agregarATablaHash(true,res.true,valorHash)
+      end if
+      incrementarPos(pos)
+     end while
