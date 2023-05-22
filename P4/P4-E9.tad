@@ -1,0 +1,67 @@
+estr es tupla <min:nat, max:nat, linkedlist(nat)>
+
+La eleccion de esta estructura me permite cumplir con las complejidades dadas, ya que insertar el minimo o maximo elemento nos implica chequear
+si es el min o max guardado en la estr, y luego agregarlo al final de la lista (que no necesariamente debe estar ordenada.)
+
+La interseccion entre conjuntos que son todos los elementos menores o mayores que el del otro siempre sera vacia, por lo tanto es O(1) dado que solo tenemos
+que chequear el minimo y maximo del conjunto.
+
+Ademas, si ambos conjuntos poseen elementos todos menores/mayores que el otro entonces seran disjuntos, por lo que la union sera simplemente apuntar el ultimo nodo
+de alguna de las listas de los conjuntos al primero de la otra, y actualizar minimo y maximo.
+
+Otra posible estructura es usar unicamente una linkedList y como invariante pedir que se mantenga siempre ordenada. De esta forma podemos chequear los min y max
+usando las operaciones provistas por el modulo linkedList, que tienen complejidad θ(1)
+
+estr es linkedList(nat) 
+
+Los algoritmos los voy a escribir considerando esta ultima estructura.
+
+algoritmos:
+  iAg(in elem: nat, in/out c:conj)
+    if primero(c) > elem then
+      agregarAdelante(c,elem)
+
+    else if ultimo(c) < elem then
+      agregarAtras(c,elem) 
+
+    else
+
+      itConj ← crearIt(c)
+
+      while haySiguiente(itConj) do
+        if siguiente(itConj) > elem then
+          agregarComoSiguiente(itConj, elem)
+          break
+        else 
+          avanzar(itConj)  
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  iInterseccion(in c1:conj, in c2:conj) → res:conj
+    if primero(c1) > ultimo(c2) || primero(c2) > ultimo(c1) then
+      res ← vacia()
+
+    else
+      itC1 ← crearIt(c1)
+      itC2 ← crearIt(c2)
+
+      while haySiguiente(itC1) ∧ haySiguiente(itC2) do
+        // Si el elemento de la primera lista es menor al de la segunda avanzo el iterador de la primera
+        if siguiente(itC1) < siguiente(itC2) then
+          avanzar(itC1)
+        // Lo mismo pero al reves
+        else if siguiente(itC1) > siguiente(itC2) then
+          avanzar(itC2)
+        // Si encuentro elementos iguales los agrego a res usando agregarAtras para no romper el invariante.
+        if siguiente(itC1) == siguiente(itC2) then
+          agregarAtras(siguiente(itC1))
+          avanzar(itC1)
+          avanzar(itC2)
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  iunion(in c1:conj, in c2:conj) → res:conj
+    res ← vacia()
+
+    if primero(c1) > ultimo(c2) then
+      
