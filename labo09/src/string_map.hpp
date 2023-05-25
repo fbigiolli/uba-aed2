@@ -9,10 +9,13 @@ string_map<T>::string_map(const string_map<T>& aCopiar) : string_map() { *this =
 template <typename T>
 string_map<T>& string_map<T>::operator=(const string_map<T>& d) {
 
-    // Copiar el tamaño
+    // Se limpia el diccionario actual en caso de que estemos realizando la copia teniendo un diccionario con valores previamente definidos
+    clear();
+
+    // Se copia el tamaño
     _size = d._size;
 
-    // Copiar los elementos
+    // Se copian los elementos
     if (d.raiz != nullptr) {
         raiz = new Nodo();
         copyNodes(d.raiz, raiz);
@@ -25,7 +28,7 @@ string_map<T>& string_map<T>::operator=(const string_map<T>& d) {
 
 template <typename T>
 void string_map<T>::copyNodes(const Nodo* from, Nodo* to) {
-    // Si el nodo del que copio no es null lo defino
+    // Si el nodo a copiar no es null se define
     if (from->definicion != nullptr) {
         to->definicion = new T(*(from->definicion));
     } else {
@@ -34,7 +37,7 @@ void string_map<T>::copyNodes(const Nodo* from, Nodo* to) {
 
     to->siguientes.resize(256, nullptr);  // Inicializar el vector de siguientes en el nodo de destino
 
-    // Copio los siguientes volviendo a llamar la funcion en cada nodo que no sea nulo
+    // Se copian los siguientes volviendo a llamar la funcion en cada nodo que no sea nulo
     for (int i = 0; i < 256; i++) {
         if (from->siguientes[i] != nullptr) {
             to->siguientes[i] = new Nodo();
@@ -68,8 +71,6 @@ void string_map<T>::clearNodes(Nodo* nodo) {
     }
 }
 
-
-
 template <typename T>
 string_map<T>::~string_map(){
     clear();
@@ -84,7 +85,7 @@ template<typename T>
 void string_map<T>::insert(const pair<std::string, T>& elemento) {
     if (raiz == nullptr) {
         raiz = new Nodo();
-        raiz->siguientes.resize(256, nullptr);  // Le asigno 256 posiciones al vector de siguientes con nullptr en cada una de ellas.
+        raiz->siguientes.resize(256, nullptr);  // Se asignan 256 posiciones al vector de siguientes con nullptr en cada una de ellas.
     }
 
     Nodo* actual = raiz;
@@ -94,7 +95,7 @@ void string_map<T>::insert(const pair<std::string, T>& elemento) {
     for (char c : clave) {
         if (actual->siguientes[(int)c] == nullptr) {
             actual->siguientes[(int)c] = new Nodo();
-            actual->siguientes[(int)c]->siguientes = vector<Nodo*>(256, nullptr);  // Inicializar con 256 nullptr
+            actual->siguientes[(int)c]->siguientes = vector<Nodo*>(256, nullptr);  // Se inicializa con 256 nullptr
         }
 
         actual = actual->siguientes[(int)c];
@@ -104,7 +105,7 @@ void string_map<T>::insert(const pair<std::string, T>& elemento) {
         actual->definicion = new T(valor);
         _size++;
     } else {
-        *(actual->definicion) = valor;  // Actualizar el valor si ya existe una definición
+        *(actual->definicion) = valor;  // Se actualiza el valor si ya existe una definición
     }
 }
 
@@ -120,7 +121,7 @@ int string_map<T>::count(const string& clave) const {
         actual = actual->siguientes[(int)c];
     }
 
-    // Verificar que la clave en cuestión tenga una definición asociada.
+    // Se verifica que la clave en cuestión tenga una definición asociada.
     return (actual->definicion != nullptr) ? 1 : 0;
 }
 
@@ -145,22 +146,16 @@ T& string_map<T>::at(const string& clave) {
     return *(actual->definicion);
 }
 
+// Precondicion: la clave esta definida.
 template <typename T>
 void string_map<T>::erase(const string& clave) {
-    if (raiz == nullptr) {
-        return;  // El diccionario está vacío
-    }
 
     Nodo* actual = raiz;
     Nodo* padre = nullptr;
     int indicePadre = 0;
 
     for (char c : clave) {
-        int indice = static_cast<int>(c);
-
-        if (actual->siguientes[indice] == nullptr) {
-            return;  // La clave no existe en el diccionario
-        }
+        int indice = (int)c;
 
         padre = actual;
         actual = actual->siguientes[indice];
@@ -173,7 +168,7 @@ void string_map<T>::erase(const string& clave) {
         _size--;
     }
 
-    // Verificar si el nodo tiene hijos y no tiene definición
+    // Se verifica si el nodo tiene hijos y no tiene definición
     if (actual->definicion == nullptr) {
         bool tieneHijos = false;
 
