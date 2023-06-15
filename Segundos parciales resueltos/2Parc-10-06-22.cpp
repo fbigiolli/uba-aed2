@@ -1,4 +1,5 @@
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -49,6 +50,8 @@ vector<int> AVLSort(vector<int> input){
 /*La idea es ir recorriendo el array y armando buckets en base al tamanio del edificio*/
 
 vector<int> arquitectoSort(vector<int> input, int tolerancia){
+    vector<int> res(input.size());
+
     // Armar los buckets. 
 
     vector<vector<pair<int,int>>> buckets(input.size());
@@ -76,15 +79,72 @@ vector<int> arquitectoSort(vector<int> input, int tolerancia){
     
     // Voy metiendo en res los elementos 
 
+    int pos = 0;
+
     for (int i = buckets.size(); i > -1 ; i--)
     {
-        for (int i = 0; i < buckets[i].size(); i++)
+        for (int j = 0; j < buckets[i].size(); j++)
         {
-            
-        }
-        
+            for (int k = buckets[i][j].first; k < buckets[i][j].second; k++)
+            {
+                res[pos] = input[k];
+                pos++;
+            }   
+        }        
     }
-    
 
+    return res;
 }
 
+// Ejercicio 3
+
+/*Idea: como el array crece de a 1 en sus posiciones excepto cuando hay un hueco, se puede hacer
+  una especie de busqueda binaria modificada, en la que se compare el ultimo elemento de una mitad con
+  la suma del primer elemento + la diferencia entre ambas posiciones, por ej si la mitad va desde 0 a 3 
+  y en la pos 0 tenemos el 13, y en el 3 el 16 sumamos 13 + 3 = 16, por lo que podemos afirmar dada la precondicion
+  del enunciado que no hay un hueco. De este modo, buscamos en la otra mitad. Otra idea posible, que es la de la implementacion
+  es que la resta entre el elem final y el principio tiene que diferir en la resta de los indices.*/
+
+void buscarHuecos(vector<int> input, int begin, int end, list<int> &huecos){
+
+    // Caso base
+    if (begin + 1 == end)
+    {
+        // Conquer
+        for (int i = input[begin] + 1 ; i < input[end] - 1 ; i++)  
+        {
+            // Merge
+            huecos.push_back(i); // La idea de este for es que si llegue a la situacion que mi low, high son elementos consecuentes, y por ejemplo son 13 y 16 tengo que agregar desde el 13+1 hasta el 16-1 (14,15)
+        }
+    }
+
+    else
+    {
+        int mid = (begin+end) / 2;
+        if (input[mid] - input[begin] != mid - begin ) // Caso donde tengo un hueco a la izquierda.
+        {
+            buscarHuecos(input,begin,mid,huecos);
+        }
+
+        if (input[end] - input[mid] != end-mid) // Caso donde tengo un hueco a la derecha.
+        {
+            buscarHuecos(input,begin,mid,huecos); 
+        }
+    }
+}
+
+list<int> huecos(vector<int> input, int size){
+    list<int> listaHuecos;
+    if(size == 1) return listaHuecos; // vacia, no hay huecos
+
+    buscarHuecos(input, 0, size, listaHuecos);
+    return listaHuecos;
+}
+/* En el caso en el que K es 1, se que en el arreglo tengo un solo hueco presente. De esta forma, puedo afirmar que voy a tener que revolver 
+   un solo subproblema, por lo que a=1, c=2 porque mi arreglo se parte en dos mitades. Entonces, aplicando el teorema maestro llego al resultado 
+   de que la complejidad resultante es O(log(n)).
+   
+   En el caso en el que tengo k huecos, voy a tener que hacer k recursiones hasta encontrar todos los huecos. Como cada recursion parte el array en 2,
+   esto tiene complejidad logaritmica, lo que deriva en una complejidad total acotada por O(klog(n))*/
+
+   
