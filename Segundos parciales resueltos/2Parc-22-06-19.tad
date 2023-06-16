@@ -1,0 +1,5 @@
+// Ejercicio 1.
+
+estr es tupla <mesa: diccTrie(mesa,tupla<conj(dni),secu(agrupacion)>)
+			   votosCandidato: diccAVL(candidato, lista(iteradorATuplaDiccMesa)
+			   repetidos: conjLineal(dni)) 
