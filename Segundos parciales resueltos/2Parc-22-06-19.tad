@@ -1,5 +1,49 @@
 // Ejercicio 1.
 
-estr es tupla <mesa: diccTrie(mesa,tupla<conj(dni),secu(agrupacion)>)
-			   votosCandidato: diccAVL(candidato, lista(iteradorATuplaDiccMesa)
-			   repetidos: conjLineal(dni)) 
+estr es tupla <mesas: diccTrie(mesa,tupla(votantes:conjLineal(DNI),votosPorAg:array(nat)))
+			   repetidos: conjAVL(DNI)
+			   mesasDondeVoto: diccAVL(DNI, tupla(#votos,iteradorARepetidos))
+			   votosPorAgrupacion: array(nat) // Donde cada indice representa una agrupacion, respetando el orden en que fueron enumeradas.	
+			   agrupacionesPorCandidato: diccAVL(candidato,agrupacion),
+
+
+
+iRegistrar
+
+// Primero borramos la informacion anterior
+votantes ← significado(mesas,m).first
+
+for dni in votantes	// O(va)
+	votanteActual ← significado(mesasDondeVoto,dni) // O(logv)
+	if votanteActual.first == 2 // O(1)
+		eliminarSiguiente(votanteActual.second) // O(1)
+		definir(mesasDondeVoto,dni,makePair(votanteActual.first - 1, null)) // O(logv)
+	end if
+	else
+		definir(mesasDondeVoto,dni,makePair(votanteActual.first - 1, votanteActual.second)) // O(logv)
+end for	
+
+
+arrayVotos ← array[largo(votosPorAgrupacion)]
+for agrupacion in as 			// O(va)
+	arrayVotos[agrupacion] += 1
+	votosPorAgrupacion[agrupacion] += 1
+end for
+
+definir(mesas,m,makePair(ds,arrayVotos)) // O(|m|)
+
+for dni in ds // O(Va)
+	if not definido?(mesasDondeVoto,dni) // O(V) 
+		definir(mesasDondeVoto,dni,makePair(1,null)) // O(logv)
+	end if
+	else
+		votanteActual ← significado(mesasDondeVoto,dni) // O(logV)
+		if votanteActual.first == 1 // 0(1)
+			iteradorARepetido ← agregarRapido(repetidos,dni) // O(1)
+			definir(mesasDondeVoto,dni,makePair(2,iteradorARepetido)) //O(logV)
+		end if
+		else
+			definir(mesasDondeVoto,dni,makePair(votanteActual.first + 1,votanteActual.second)) // O(logv)
+
+			
+Complejidad total final: O(va*logV + |m|)
