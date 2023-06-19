@@ -1,0 +1,26 @@
+estr es tupla < vehiculosPorLocalidad: diccTrie(localidad,conj(idVehiculo))
+				camarasPorLocalidad: diccTrie(localidad, conj(camara)),
+				multasPorLocalidad: diccTrie(localidad, lista(multa))
+				multasPorCamara: diccLog(camara,tupla(lista(multa),iteradorMultasPorLoc))
+				multasPorVehiculo: array(lista(tupla(multa,iteradorMultasPorLoc,iteradorMultasPorCam))
+				localidadVehiculo: array(localidad) // Donde cada posicion representa un vehiculo en particular
+				
+
+
+// Con esta estructura podemos obtener los datos por localidad en O(|l|) dado que el diccionario trie nos permite buscar
+// en tiempo dependiente del largo del string que representa a la localidad. Para poder acceder a la localidad y multas por vehiculo,
+// uso un array en cual cada posicion indexa un vehiculo, y en el se encuentra la informacion de cada uno. De esta manera, puedo acceder
+// en O(1) a cada posicion. Finalmente, para poder registrar una multa en O(log(camaras)), uso un diccLog en el que las claves sean las camaras,
+// y sus significados tienen una tupla en la que hay una lista de multas correspondientes a esa camara, y un iterador a la lista correspondiente
+// al diccionario de multasPorLocalidad, y la agrego atras en la lista del array correspondiente a la posicion del vehiculo en O(1).
+// Se requiere que al inicializar el sistema se asocie en cada tupla multasPorCamara un iterador a la localidad correspondiente para poder cumplir
+// con la complejidad en el caso de que la localidad no tuviera una multa previamente.
+
+b)
+
+abonar(in v:vehiculo)
+
+multasVehiculo ← multasPorVehiculo[v]
+
+for tupla in multasVehiculo
+	
