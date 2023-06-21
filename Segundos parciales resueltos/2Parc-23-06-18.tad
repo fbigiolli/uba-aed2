@@ -1,0 +1,84 @@
+// Ejercicio 1 
+
+estr es tupla < procesosBloqueados: diccLog(recurso,heapBinario(proceso)),
+				programas: diccLog(programa,tupla<iteradorAConjRecursos,iteradorADiccProcesosBloqueados>),
+				recursos:conjAVL(recurso),
+				iteradoresASiendoUsados: diccLog(recurso,iteradorAConjRecursos)
+				>
+
+Para lanzar un proceso, lo agregamos al diccLog de programas con un nullptr
+en su definicion, ya que primero se agrega el programa, y en otra operacion se solicita
+el recurso en cuestion. Esto lo hacemos en O(logP) ya que es insertar un nullptr(que se genera en O(1))
+en un diccLog.
+
+Para solicitar un recurso, tenemos que ver si dicho recurso se encuentra disponible. Para ello, buscamos
+en iteradoresASiendoUsados si el recurso en cuestion se encuentra ocupado en O(log R). En caso de que se encuentre ocupado,
+insertamos en procesosBloqueados para el recurso en cuestion el proceso en el heap que se encuentra en su definicion. Esta operacion
+toma O(log(R) + log(P)).
+
+Luego, para liberar un proceso buscamos en el diccionario de programas dicho proceso en O(log(P)), y en su definicion encontramos una tupla
+de iteradores, uno al heap del recurso correspondiente, y otro al conjunto de iteradores a los recursos siendo usados. En el heap borramos 
+este proceso que es el primero de la queue, lo cual toma O(log(P)) en el peor caso, que es que todos los procesos esten esperando este proceso, 
+y borramos el iterador del conj de iteradoresASiendoUsados en O(1). 
+
+b.
+
+iSolicitarRecurso(in p:proceso, in r:recurso, in/out SO:SO)
+
+if ¬(pertenece?(iteradoresASiendoUsados,r)) then // O(logR)
+	iteradorADicc ← definir(procesosBloqueados,r, encolar(p,heapVacio)) // O(logR) ya que encolar en un heap vacio es O(1)
+	iteradorAConj ← agregar(recursos,r) // Aunque ya esta definido de antemano, lo hago para obtener el iterador en tiempo logaritmico
+	definir(programas,p,<iteradorAConj,iteradorADicc>) // O(logP)
+else
+	heapRecurso ← significado(procesosBloqueados,r) // O(log(R))
+	encolar(heapRecurso,p)							// O(log(P))
+	iteradorADicc ← definir(procesosBloqueados,r,heapRecurso) // O(log(R))
+	iteradorAConj ← agregar(recursos,r) // O(log(R))
+	definir(programas,p,<iteradorAConj,iteradorADicc>) // O(log(P))
+end if
+
+fin algoritmo
+
+
+iLiberarRecurso(in p:proceso,in/out SO:SO)
+
+iteradoresALiberar ← significado(programas,p) // O(log(P))
+
+eliminarSiguiente(iteradoresALiberar.first) // O(1)
+desencolarPrimero(iteradoresALiberar.second) // O(log(P))
+
+definir(progranas,p,<nullptr,nullptr>) // O(log(P))
+
+fin algoritmo
+
+// Ejercicio 3
+
+tamMaxCopa
+
+tamMaxCopaAux(in ab:arbol) out res:<actual,maximo>
+	if nil?(ab)  // nodo vacio
+		return <0,0> 
+
+	if nil?(ab.izq) && nil?(ab.der) // hoja
+		return <1,1>
+
+	if 
+
+	recIzq = tamMaxCopaAux(ab.izq) T(n/2)
+	recDer = tamMaxCopaAux(ab.der) T(n/2)
+
+
+	if ab.izq.raiz == ab.raiz && ab.der.raiz == ab.raiz
+		if recIzq.first == recDer.first 
+			if max(recIzq.second,recDer.second) < recIzq.first + 1 // Si el maximo acumulado en ambos hijos es menor a la nueva copa 
+				return <recIzq.first + 1, recIzq.first + 1> // Devuelvo la tupla con el max actualizado.
+			else
+				return <recIzq.first + 1, max(recIzq.second,recDer.second)> // Dejo como maximo el maximo entre ambos hijos del arbol.		
+			end if
+		else // Caso donde varia el tam de las copas acumuladas de ambos hijos 
+			return<min(recIzq.first,recDer.first) + 1, max(recIzq.second,recDer.second)> // Devolvemos el minimo entre las copas que se venian acumulando aumentado en 1 por la raiz que se incorpora.
+		end if	
+	else 
+		return<1,max(recIzq.second,recDer.second)>
+	end if
+
