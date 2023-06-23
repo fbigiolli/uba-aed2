@@ -1,0 +1,35 @@
+// Ejercicio 1 
+
+
+Primero, armamos un diccLog(nombrePelicula, lista<tripla>). Vamos a ir recorriendo el input y para cada pelicula,
+vamos a insertar en la lista significado la tripla de elementos que corresponden a tal pelicula. Luego, con el algoritmo
+inorder podemos recorrer todo el AVL para armar buckets de modo que al ir insertando los elementos queden ordenados por nombrePelicula.
+
+O(nlogG + n)
+
+Despues, pasamos todas las listas a array en O(n)
+
+Ahora, sacamos los repetidos armando por ejemplo un dicctrie para cada pj con un bool, de modo que se acceda en O(1), y entonces
+sacar los repetidos se pueda hacer recorriendo cada bucket (O(n))*O(1).
+
+para cada bucket
+diccTrie(nombrepj,) // esto todavia falta, no esta terminado como sacar los repe jeeee
+
+Ahora que ya no hay mas repetidos, hacemos un array de 50*p en el cual en cada posicion aparece si esta o no el personaje, o sea,
+una especie de counting sort.
+
+Hasta aca ya tenemos ordenado x grupo y numero de peli. Finalmente, en cada uno de los buckets de los grupos tenemos que ordenar x nombre de pj
+Como el numero de personajes esta acotado, usamos cualquier algoritmo estable de ordenamiento ya que nos va a dar una complejidad a lo sumo de O(n) por una constante.
+
+Finalmente, queda unir los buckets en el orden en que los armamos y ese seria el resultado.
+
+
+diccAVL(numeroDePeli,lista<tripla>)
+
+
+
+ordenarPorGrupo(A) //Ordenar por grupo log g * g
+Creo un bucket para cada uno 
+grupo  <personaje,<cant>>
+Star Wars <darkvader,2>,<darkvader,4> <Luke,3>, <luke,2>
+//countingSort para cada grupo es g * cada countingsort que es = o(p+p*(nombres diferentes que es acotado))

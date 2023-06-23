@@ -1,0 +1,97 @@
+// Ejercicio 1
+
+estr es tupla <articulos diccTrie:(articulo,diccLog(seccion,<nat,ultimaVersion(texto)>)),
+               ultimaSeccion diccTrie:(articulo,iteradorAUltimaModif)>
+
+
+    ModificarSeccion(in ma = s, in a:artículo, in s:sección,in t :texto)
+ 		It = obtener(a,s.ultimaSeccion) //Aca entras al iterador por referencia
+ 		Siguiente(It) = t 
+// Ejercicio2 
+
+Primero recorremos todo el array para separar en 3 buckets: low, high y los del medio. Low estan ordenados en forma decreciente,
+por lo tanto los tenemos que insertar en orden inverso. Luego, high es simplemente insertarlos en orden. Los del medio necesitamos ordenarlos`
+de alguna manera que cumpla la complejidad. Como en el unico bucket que hay que ordenar hay logn de elementos, podemos usar cualquier algo de Ordenamiento
+para ordenarlos, ya que el logaritmo de una potencia hace que la potencia pase a multiplicar al logaritmo, quedando la complejidad 2*logn en el caso de uno cuadratico, por ej.
+
+
+
+OrdenamientoMediciones(im a:arreglo(nat),in L:nat,In H:nat)
+	MenoresAL:lista(nat) 
+	EntreLyH:lista(nat)
+	MayoresaH:lista(nat)
+
+	for int i = 0,i to n do 
+		if a[i] < L then AgregarAdelante(a[i],MenoresAL) else 
+		if a[i] > H then AgregarAtras(a[i],MayoresaH) else 
+		agregarAtras(EntreLyH)
+	endfor 
+
+	listToArray(EntreLyH) //O log n
+	selectionSort(EntreLyH) // O (n!) == O(n)
+
+	listToArray(MenoresALn)
+	listToArray(MayoresaH) //Entre ambas O(n)
+
+	return concatenar(MenoresALn,EntreLyH,MayoresaH) //O n
+
+// Ejercicio 3 
+
+La idea es hacer una especie de busqueda binaria "en cruz", o sea, buscamos por fila y columna si los valores se van acercando o alejando al 0
+basandonos en las condiciones que nos dan (decrece o crece segun a que lado estamos del 0). Esto nos va a dar una complejidad logaritmica sobre
+la dimension de la matriz, que es la que nos piden.
+
+MatrizLocaAux(in A:arreglo(arreglo(nat)),in x1:nat,in x2:nat,in y1:nat,in y2:nat) → res : <nat,nat> 
+	if x1 + 1 == x2 ∧ y1 + 1 == y2 then // O(1)
+			return <x1,y1> 
+
+	else 
+ 	mx = x1 + x2 / 2 // Medio de la fila
+ 	my = y1 + y2 / 2 // Medio de la columna
+
+ 	If A[mx][my] != 0 then 
+ 		if A[mx - 1][my] > A[mx][my] then 
+ 			if A[mx][my - 1] > A[mx][my] then 
+ 				MatrizLocaAux(A,mx,x2,my,y2) //Agarro el cuarto 1/4  T(n/2)
+ 			else 
+ 				MatrizLocaAux(A,mx,x2,y1,x2) //Agarro el segundo cuarto T(n/2)
+ 		else 
+ 			if A[mx][my - 1] > A[mx][my] then // Caso que esta del lado izquierdo de la mitad
+ 				MatrizLocaAux(A,x1,mx,my,y2) //Agarro el tercer cuarto T(n/2)
+ 			else 	
+ 				MatrizLocaAux(A,x1,mx,y1,my) //Agarro el cuarto 1/4 T(n/2)
+ 	else res= <mx,my>
+
+
+ 	return res
+
+    T(n/2) + 1 = log n :) sapeeeeeeeee
+
+    f(n) E (N log 2 1) , entonces f(n) E O(1), Segundo caso del teorema ,Te queda o(N log 2 1 * log n) = O(log n) :)
+
+
+Ordenamiento in A:Array<int> L:nat H:nat
+While (i < Tam(A))
+    if.....
+
+
+
+
+    ⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆ 
+⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿ 
+⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀ 
+⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ 
+⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉Puta
+
+
+

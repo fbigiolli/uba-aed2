@@ -51,6 +51,16 @@ definir(progranas,p,<nullptr,nullptr>) // O(log(P))
 
 fin algoritmo
 
+// Ejercicio 2
+
+La idea es armar un diccTrie en el cual metamos para cada equipo una tupla <puntos, dif goles>. Para ello recorremos todo
+el array de entrada, contando puntos (en O(1) dado que es una comparacion entre los goles de ambos), y contando tambien la diferencia
+de goles. Luego, armamos buckets por puntos (podemos hacerlo porque esta acotado a por 3n, n largo del array de entrada). Dentro de estos buckets,
+ordenamos los equipos por diferencia de goles usando counting sort, aprovechando que la cantidad de goles esta acotada por k.
+
+
+
+
 // Ejercicio 3
 
 tamMaxCopa

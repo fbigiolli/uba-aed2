@@ -45,3 +45,61 @@ void ventasSort (vector<pair<string,int>> input){
     
     copy(res,input)
 }
+
+
+// Ej 3
+
+struct nodo
+{
+    bool valor;
+    nodo*izq;
+    nodo*der;
+};
+
+
+bool estaEquilibrado(nodo*raiz){
+    return estaEquilibradoAux(raiz).first;
+}
+
+<bool,int,int> estaEquilibradoAux(nodo*raiz){
+    if (raiz == null)
+    {
+        return <true,0,0>;
+    }
+    
+    else
+    {
+        der = estaEquilibrado(raiz.der)
+        izq = estaEquilibrado(raiz.izq)
+
+        if (der.first == false || izq.first == false)
+        {
+            return false;
+        }
+        
+        else
+        {
+            if (izq.third + 1 == der.second ||
+                izq.third - 1 == der.second ||
+                izq.third == der.second)
+            {
+                if (nodo.raiz == true)
+                {
+                    return<true, 1+izq.second+der.second, izq.third + der.third>
+                }
+                
+                else
+                {
+                    return<true,izq.second + der.second, 1 + izq.third + der.third>
+                }  
+            }
+
+            else
+            {
+                return <false,0,0>
+            }
+        }
+    }
+}
+
+

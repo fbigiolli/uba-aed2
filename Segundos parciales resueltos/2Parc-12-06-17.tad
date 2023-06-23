@@ -1,0 +1,12 @@
+// Ejercicio 1
+
+itinerario es lista<direccion>
+
+estr es tupla < roversActivos: diccLog(rover,posicion),
+                conjRA: conjAVL(rover),
+                conjRI: conjAVL(rover),
+                itinerarios: diccLog(rover, <itinerario,iterador>),
+                cantidadPorItinerario: diccTrie(itinerario,nat)
+                >
+
+

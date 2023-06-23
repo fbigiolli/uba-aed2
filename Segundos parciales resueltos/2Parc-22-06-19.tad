@@ -47,3 +47,57 @@ for dni in ds // O(Va)
 
 			
 Complejidad total final: O(va*logV + |m|)
+
+
+// Ejercicio 3
+
+cadenaMasLargaAux(in:A(array), in cadenasAcum:vector(tripla<b,p,q>), in max:nat )
+
+if A.size == 1 //O(1) // caso base
+	tuplaDescompuesto ← descomponer(A[0]) 
+	vector<tripla> cadenasAcum
+	cadenasAcum.push_back(<tuplaDescompuesto.first,tuplaDescompuesto.second,tuplaDescompuesto.second>)
+	return todo lo otro
+	
+recIzq ← cadenaMasLargaAux(A[0,n/2])  T(n/2)
+recDer ← cadenaMasLargaAux(A[n/2,n])  T(n/2)
+
+itIzq ← crearIt(recIzq.cadenasAcum)
+itDer ← crearIt(recDer.cadenasAcum)
+vector<tripla> cadenasAcum
+
+while haySiguiente(itDer) && haySiguiente(itIzq)
+	if siguienteSignificado(itIzq).first == siguienteSignificado(itDer).first && siguienteSignificado(itIzq).third + 1 == siguienteSignificado(itDer).second
+		cadenasAcum.push_back(siguienteSignificado(itIzq).first,siguienteSignificado(itIzq).second,siguienteSignificado(itDer).third)
+	avanzar(itDer) 
+	avanzar(itIzq)
+
+	else
+		if siguienteSignificado(itIzq).first < siguienteSignificado(itDer).first
+			cadenasAcum.push_back(siguienteSignificado(itIzq))
+		else
+			cadenasAcum.push_back(siguienteSignificado(itDer))
+	end if
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cadenaMasLargaAux(in:A(Array) out 
+
+	if A.size == 1 //o(1)
+	then
+		if()
+
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
