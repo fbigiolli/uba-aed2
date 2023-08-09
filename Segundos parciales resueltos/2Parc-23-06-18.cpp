@@ -19,7 +19,7 @@ int maximaCopa(nodo n, int valorAnterior){
     
     return max(1 + maximaCopa(n.izq,valorAnterior),1 + maximaCopa(n.der,valorAnterior));
 
-    COMO ME SALGO DE ESTO???
+
 }
 
 
