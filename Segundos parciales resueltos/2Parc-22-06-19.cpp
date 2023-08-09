@@ -64,5 +64,4 @@ Ordenamiento (inout A: arreglo(nat),k:nat)
 //La idea es mantener un heap de tamaño k,para luego ir encolando y desencolando a medida que avanzo,Ya que se que luego de i,el menor elemento siguiente
 // está a lo sumo a i + k posiciones adelante.Entonces ordeno los primeros k elementos en el heap,Saco el menor,y agrego otro 
 
-QUE LOS CUNPLAAAAS FELIIIII QUE LOS CUNMPLAA FELII EXACTAS .
 
